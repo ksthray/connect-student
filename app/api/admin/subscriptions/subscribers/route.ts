@@ -51,7 +51,7 @@ export async function GET(request: Request) {
     // On transforme le tableau d'agrégation en Map pour un accès rapide (O(1))
     // Map<UserId, TotalAmount>
     const spendingMap = new Map<string, number>();
-    transactionsSum.forEach((t) => {
+    transactionsSum.forEach((t: any) => {
       spendingMap.set(t.userId, t._sum.amount || 0);
     });
 
