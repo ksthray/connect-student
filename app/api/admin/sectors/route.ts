@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/admin/categories/route.ts
 
 import { NextResponse } from "next/server";
@@ -103,7 +104,7 @@ export async function GET(request: Request) {
       },
     });
 
-    const formattedSectors = sectors.map((sector) => ({
+    const formattedSectors = sectors.map((sector: any) => ({
       id: sector.id,
       name: sector.name,
       slug: sector.slug,

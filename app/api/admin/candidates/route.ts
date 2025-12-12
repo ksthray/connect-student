@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
@@ -48,7 +49,7 @@ export async function GET(request: Request) {
     });
 
     // 3. NORMALISATION ET FORMATAGE DES DONNÉES
-    const formattedCandidates = candidates.map((candidate) => ({
+    const formattedCandidates = candidates.map((candidate: any) => ({
       id: candidate.id,
       user: candidate.fullname,
       email: candidate.email,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
@@ -32,7 +33,7 @@ export async function GET(request: Request) {
 
     // 3. Calculer le "Total Spent" pour ces utilisateurs
     // On récupère la liste des IDs utilisateurs concernés
-    const userIds = subscriptions.map((sub) => sub.userId);
+    const userIds = subscriptions.map((sub: any) => sub.userId);
 
     // On fait une agrégation sur la table Transaction pour ces utilisateurs
     const transactionsSum = await prisma.transaction.groupBy({
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
     });
 
     // 4. Formater les données pour le frontend
-    const formattedSubscribers = subscriptions.map((sub) => {
+    const formattedSubscribers = subscriptions.map((sub: any) => {
       const totalSpent = spendingMap.get(sub.userId) || 0;
 
       return {

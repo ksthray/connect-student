@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { jobCreateSchema } from "@/schemas/job";
@@ -143,7 +144,7 @@ export async function GET(request: Request) {
       },
     });
 
-    const formattedJobs = jobs.map((job) => ({
+    const formattedJobs = jobs.map((job: any) => ({
       id: job.id,
       title: job.title,
       slug: job.slug,

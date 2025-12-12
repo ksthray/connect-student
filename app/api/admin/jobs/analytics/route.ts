@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/admin/jobs/analytics/route.ts
 
 import { NextResponse } from "next/server";
@@ -60,7 +61,7 @@ export async function GET(request: Request) {
       {
         state: true,
         data: {
-          jobList: allJobsWithCounts.map((job) => ({
+          jobList: allJobsWithCounts.map((job: any) => ({
             ...job,
             applicationCount: job._count.applications,
             _count: undefined, // Nettoyer l'objet avant envoi

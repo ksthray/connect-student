@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
@@ -60,7 +61,7 @@ export async function GET(request: Request) {
 
     // 3. Normalisation et Combinaison des Activités
     const normalizedApplications: RecentActivity[] = recentApplications.map(
-      (app) => ({
+      (app: any) => ({
         id: app.id,
         type: "application",
         date: app.createdAt,
@@ -70,7 +71,7 @@ export async function GET(request: Request) {
     );
 
     const normalizedJobOffers: RecentActivity[] = recentJobOffers.map(
-      (offer) => ({
+      (offer: any) => ({
         id: offer.id,
         type: "posting",
         date: offer.createdAt,

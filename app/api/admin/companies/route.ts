@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/admin/companies/route.ts
 
 import { NextResponse } from "next/server";
@@ -142,7 +143,7 @@ export async function GET(request: Request) {
     });
 
     // Le mapping est souvent nécessaire pour aplatir les données pour le frontend
-    const formattedCompanies = companies.map((company) => ({
+    const formattedCompanies = companies.map((company: any) => ({
       id: company.id,
       fullname: company.user.fullname,
       companyName: company.companyName,

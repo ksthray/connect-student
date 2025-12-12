@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/api/admin/users/route.ts
 
 import { NextResponse } from "next/server";
@@ -33,7 +34,7 @@ export async function GET(request: Request) {
     });
 
     // 3. Formater les données pour une meilleure lisibilité
-    const formattedUsers = users.map((user) => {
+    const formattedUsers = users.map((user: any) => {
       let displayName = user.email; // Nom par défaut
       let profileDetails = {};
 
