@@ -1,7 +1,11 @@
 // src/schemas/subscription.ts
 
 import { z } from "zod";
-import { SubscriptionPlan } from "@prisma/client";
+const SubscriptionPlan = {
+  FREE: "FREE",
+  STANDARD: "STANDARD",
+  PREMIUM: "PREMIUM",
+};
 // Assurez-vous d'importer SubscriptionPlan depuis votre client Prisma
 
 // Schéma pour simuler un paiement, limitant les plans à payer (exclut FREE)
