@@ -1,13 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, Briefcase, Calendar, Code2, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useFetch } from "@/services/query";
 import { JobOfferType } from "@/entities/types";
 import { Skeleton } from "../ui/skeleton";
-import { JobType } from "@prisma/client";
 import { returnNameOfJobType } from "@/services/helpers";
 
 export default function OffresSection() {
