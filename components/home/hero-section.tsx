@@ -29,10 +29,10 @@ const HeroSection = () => {
 
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-10">
         {/* Text Content */}
-        <div className="flex-1 text-center md:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-secondary/10 border border-secondary/20 rounded-full">
+        <div className="flex-1 text-center space-y-3 md:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-premiere border border-secondary/20 rounded-full">
             <Sparkles className="w-4 h-4 text-secondary" />
-            <span className="text-sm font-medium text-secondary">
+            <span className="text-[10px] font-medium text-secondary">
               Bienvenue dans le futur de la mise en relation professionnelle
             </span>
           </div>
