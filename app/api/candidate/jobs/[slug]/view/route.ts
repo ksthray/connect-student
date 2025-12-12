@@ -5,11 +5,11 @@ import { prisma } from "@/lib/prisma";
 // Importation de l'API cookies de Next.js
 import { cookies } from "next/headers";
 
-export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const jobId = params.id;
+type Params = { params: Promise<{ slug: string }> };
+
+export async function POST(request: Request, { params }: Params) {
+  const jobId = (await params).slug;
+
   const cookieStore = cookies();
 
   // Clé du cookie pour cette offre spécifique (ex: viewed_job_clx5t...123)

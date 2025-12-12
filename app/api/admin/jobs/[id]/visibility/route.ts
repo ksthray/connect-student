@@ -5,17 +5,16 @@ import { prisma } from "@/lib/prisma";
 import { jobVisibilitySchema } from "@/schemas/job";
 import { authenticate } from "@/lib/authMiddleware";
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const jobId = params.id;
+type Params = { params: Promise<{ id: string }> };
 
+export async function PUT(request: Request, { params }: Params) {
   const { isValid, response } = await authenticate(request);
 
   if (!isValid) {
     return response; // Stop ici si token invalide
   }
+
+  const jobId = (await params).id;
 
   // 2. Validation Zod
   const body = await request.json();

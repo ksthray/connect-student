@@ -4,10 +4,9 @@ import { authenticate } from "@/lib/authMiddleware";
 import { prisma } from "@/lib/prisma";
 import { adminRegisterSchema } from "@/schemas/admin/auth";
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+type Params = { params: Promise<{ id: string }> };
+
+export async function PUT(request: Request, { params }: Params) {
   const { isValid, response } = await authenticate(request);
 
   if (!isValid) {
@@ -24,7 +23,8 @@ export async function PUT(
 
   const { fullname, email, password, phone } = validation.data;
 
-  const { id } = params;
+  const id = (await params).id;
+
   try {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);

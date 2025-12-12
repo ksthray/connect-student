@@ -4,16 +4,15 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
 import { paymentRateSchema } from "@/schemas/admin/rate";
 
-interface Params {
-  params: { id: string };
-}
+type Params = { params: Promise<{ id: string }> };
 
 // PUT: Corriger un taux spécifique
 export async function PUT(request: Request, { params }: Params) {
   const { isValid, response } = await authenticate(request);
   if (!isValid) return response;
 
-  const rateId = params.id;
+  const rateId = (await params).id;
+
   const body = await request.json();
   const validation = paymentRateSchema.safeParse(body);
 

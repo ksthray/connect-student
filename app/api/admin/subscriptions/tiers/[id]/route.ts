@@ -4,16 +4,16 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
 import { subscriptionTierSchema } from "@/schemas/admin/subscription";
 
-interface Params {
+type Params = {
   params: { id: string };
-}
+};
 
 // PUT: Mettre à jour un plan existant
 export async function PUT(request: Request, { params }: Params) {
   const { isValid, response } = await authenticate(request);
   if (!isValid) return response;
 
-  const tierId = params.id;
+  const tierId = (await params).id;
   const body = await request.json();
 
   // Validation (On réutilise le schéma, même si 'name' ne changera pas l'ID reste la clé)
