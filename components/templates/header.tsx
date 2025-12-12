@@ -6,6 +6,40 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
+type MenuType = {
+  id: number;
+  name: string;
+  link: string;
+};
+
+const menus: MenuType[] = [
+  {
+    id: 1,
+    name: "Accueil",
+    link: "/",
+  },
+  {
+    id: 2,
+    name: "Les offres",
+    link: "/offres",
+  },
+  {
+    id: 3,
+    name: "Entreprises",
+    link: "/entreprises",
+  },
+  {
+    id: 4,
+    name: "À propos",
+    link: "/a-propos",
+  },
+  {
+    id: 5,
+    name: "Contact",
+    link: "/contact",
+  },
+];
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   // État pour suivre si la page a été défilée
@@ -64,29 +98,14 @@ export default function Header() {
 
         {/* Navigation (desktop) */}
         <nav className="hidden md:flex items-center space-x-8 text-gray-700 font-medium">
-          <Link href="/" className="hover:text-premiere transition-colors">
-            Accueil
-          </Link>
-          <Link
-            href="/offres"
-            className="hover:text-premiere transition-colors">
-            Les offres
-          </Link>
-          <Link
-            href="/entreprises"
-            className="hover:text-premiere transition-colors">
-            Entreprises
-          </Link>
-          <Link
-            href="/a-propos"
-            className="hover:text-premiere transition-colors">
-            À propos
-          </Link>
-          <Link
-            href="/contact"
-            className="hover:text-premiere transition-colors">
-            Contact
-          </Link>
+          {menus.map((menu) => (
+            <Link
+              key={menu.id}
+              href={menu.link}
+              className="hover:text-premiere transition-colors">
+              {menu.name}
+            </Link>
+          ))}
         </nav>
 
         {/* Actions (desktop) */}
@@ -117,36 +136,16 @@ export default function Header() {
       {isOpen && (
         <div className={mobileMenuClasses}>
           <nav className="flex flex-col p-4 space-y-3 text-gray-700">
-            <Link
-              href="/"
-              className="hover:text-blue-600 transition-colors"
-              onClick={toggleMenu}>
-              Accueil
-            </Link>
-            <Link
-              href="/offers"
-              className="hover:text-blue-600 transition-colors"
-              onClick={toggleMenu}>
-              Les offres
-            </Link>
-            <Link
-              href="/companies"
-              className="hover:text-blue-600 transition-colors"
-              onClick={toggleMenu}>
-              Entreprises
-            </Link>
-            <Link
-              href="/about"
-              className="hover:text-blue-600 transition-colors"
-              onClick={toggleMenu}>
-              À propos
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-blue-600 transition-colors"
-              onClick={toggleMenu}>
-              Contact
-            </Link>
+            {menus.map((menu) => (
+              <Link
+                key={menu.id}
+                href={menu.link}
+                onClick={toggleMenu}
+                className="hover:text-premiere transition-colors">
+                {menu.name}
+              </Link>
+            ))}
+
             <div className="pt-3 border-t border-gray-200 flex flex-col space-y-2">
               <Button
                 variant="outline"
