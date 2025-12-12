@@ -1,8 +1,7 @@
 // src/utils/auth.ts
 
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { UserRole } from "@prisma/client"; // Importation de l'Enum UserRole générée par Prisma
+import jwt from "jsonwebtoken"; // Importation de l'Enum UserRole générée par Prisma
 
 // Configuration du secret JWT (à définir dans votre .env)
 const JWT_SECRET =
@@ -40,7 +39,10 @@ export async function sendVerificationEmail(
 
 // --- Fonction de Token (JWT) ---
 
-export function generateToken(userId: string, role: UserRole): string {
+export function generateToken(
+  userId: string,
+  role: "CANDIDATE" | "COMPANY" | "ADMIN"
+): string {
   // Stocke l'ID de l'utilisateur et son rôle dans le jeton pour l'autorisation future
   return jwt.sign({ id: userId, role: role }, JWT_SECRET, { expiresIn: "30d" });
 }
