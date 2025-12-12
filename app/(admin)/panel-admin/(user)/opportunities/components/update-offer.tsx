@@ -43,7 +43,6 @@ import { useAuthStore } from "@/store/store";
 import { jobCreateSchema } from "@/schemas/job";
 import { CompanyType, JobOfferType, SectorType } from "@/entities/types";
 import { useFetch } from "@/services/query";
-import { JobType } from "@prisma/client";
 import {
   Select,
   SelectContent,
@@ -60,7 +59,13 @@ type DataPost = {
   title: string;
   description: string;
   location: string;
-  type: JobType;
+  type:
+    | "INTERNSHIP"
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "EVENT"
+    | "CONFERENCE"
+    | "TRAINING";
   deadline: Date;
   detail?: string;
   requirements?: string;
@@ -70,13 +75,22 @@ type DataPost = {
   visibility?: boolean;
 };
 
-const jobTypes: { label: string; value: JobType }[] = [
-  { label: "Stage", value: JobType.INTERNSHIP },
-  { label: "Emploi Temps Plein", value: JobType.FULL_TIME },
-  { label: "Emploi Temps Partiel", value: JobType.PART_TIME },
-  { label: "Événement", value: JobType.EVENT },
-  { label: "Conférence", value: JobType.CONFERENCE },
-  { label: "Formation", value: JobType.TRAINING },
+const jobTypes: {
+  label: string;
+  value:
+    | "INTERNSHIP"
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "EVENT"
+    | "CONFERENCE"
+    | "TRAINING";
+}[] = [
+  { label: "Stage", value: "INTERNSHIP" },
+  { label: "Emploi Temps Plein", value: "FULL_TIME" },
+  { label: "Emploi Temps Partiel", value: "PART_TIME" },
+  { label: "Événement", value: "EVENT" },
+  { label: "Conférence", value: "CONFERENCE" },
+  { label: "Formation", value: "TRAINING" },
 ];
 
 const UpdateOffer = ({
@@ -133,7 +147,13 @@ const UpdateOffer = ({
     title: string;
     description: string;
     location: string;
-    type: JobType;
+    type:
+      | "INTERNSHIP"
+      | "FULL_TIME"
+      | "PART_TIME"
+      | "EVENT"
+      | "CONFERENCE"
+      | "TRAINING";
     deadline: string;
     detail?: string;
     requirements?: string;
@@ -150,7 +170,7 @@ const UpdateOffer = ({
       title: "",
       description: "",
       location: "",
-      type: JobType.FULL_TIME,
+      type: "FULL_TIME",
       deadline: new Date().toISOString(),
       requirements: "",
       coverImage: "",
@@ -236,7 +256,7 @@ const UpdateOffer = ({
         title: offerData.title || "",
         description: offerData.description || "",
         location: offerData.location || "",
-        type: offerData.type || JobType.FULL_TIME,
+        type: offerData.type || "FULL_TIME",
         deadline: offerData.deadline
           ? new Date(offerData.deadline).toISOString()
           : new Date().toISOString(),
