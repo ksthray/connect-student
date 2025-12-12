@@ -4,9 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
 import { subscriptionTierSchema } from "@/schemas/admin/subscription";
 
-type Params = {
-  params: { id: string };
-};
+type Params = { params: Promise<{ id: string }> };
 
 // PUT: Mettre à jour un plan existant
 export async function PUT(request: Request, { params }: Params) {
