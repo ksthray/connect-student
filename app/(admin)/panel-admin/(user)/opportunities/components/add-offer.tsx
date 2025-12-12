@@ -162,7 +162,7 @@ const AddOffer = ({
   };
 
   const form = useForm<JobFormValues, any, JobFormValues>({
-    resolver: zodResolver(jobCreateSchema),
+    resolver: zodResolver(jobCreateSchema) as any,
     defaultValues: {
       companyId: "",
       title: "",

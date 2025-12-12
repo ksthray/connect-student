@@ -58,7 +58,13 @@ export async function POST(request: Request) {
         coverImage: data.coverImage,
         location: data.location,
         requirements: data.requirements,
-        type: data.type,
+        type: data.type as
+          | "INTERNSHIP"
+          | "FULL_TIME"
+          | "PART_TIME"
+          | "EVENT"
+          | "CONFERENCE"
+          | "TRAINING",
         sectors: data.sectors
           ? {
               connect: data.sectors.map((sectorId: string) => ({

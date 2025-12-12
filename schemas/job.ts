@@ -1,8 +1,15 @@
 // src/schemas/job.ts
 
 import { z } from "zod";
-// Importez les Enums de Prisma pour le typage et la validation
-import { JobType } from "@prisma/client";
+
+const JobType = {
+  INTERNSHIP: "INTERNSHIP",
+  FULL_TIME: "FULL_TIME",
+  PART_TIME: "PART_TIME",
+  EVENT: "EVENT",
+  CONFERENCE: "CONFERENCE",
+  TRAINING: "TRAINING",
+};
 
 export const jobCreateSchema = z.object({
   // Champs principaux de l'offre
