@@ -1,0 +1,351 @@
+// Fichier : schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =========================================================
+// ENUMÉRATIONS EXISTANTES
+// =========================================================
+
+enum UserRole {
+  CANDIDATE
+  COMPANY
+  ADMIN
+}
+
+// On garde cette Enum pour ton code existant (legacy support)
+enum SubscriptionPlan {
+  FREE
+  STANDARD
+  PREMIUM
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  ACCEPTED
+  REJECTED
+}
+
+enum JobType {
+  INTERNSHIP
+  FULL_TIME
+  PART_TIME
+  EVENT
+  CONFERENCE
+  TRAINING
+}
+
+enum UserLevel {
+  STUDENT
+  GRADUATE
+  PROFESSIONAL
+}
+
+enum PaymentMethod {
+  MOBILE_MONEY
+  CARD
+  CASH
+}
+
+enum TransactionRequestStatus {
+  PENDING
+  CANCEL
+  SUCCESS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+}
+
+// =========================================================
+// NOUVEAUX MODÈLES DE GESTION D'ABONNEMENT
+// =========================================================
+
+// 1. Configuration des plans (Géré par l'Admin)
+// Je l'appelle 'SubscriptionTier' pour ne pas entrer en conflit avec l'Enum 'SubscriptionPlan'
+model SubscriptionTier {
+  id       String           @id @default(cuid())
+  name     SubscriptionPlan @unique // Lien strict avec ton Enum (FREE, STANDARD, PREMIUM)
+  priceUSD Decimal          @default(0.0)
+
+  // Tableau de chaines pour les avantages (PostgreSQL supporte ça nativement)
+  benefits String[]
+
+  // Limites
+  applicationLimit Int @default(3) // Ex: 3 pour Free, -1 pour illimité
+  notifiedLimit    Int @default(0) // Nbre d'offres matchées notifiées par mail (0 pour Free)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation inverse
+  subscriptions UserSubscription[]
+}
+
+// 2. Abonnement Actif d'un utilisateur
+model UserSubscription {
+  id     String @id @default(cuid())
+  userId String @unique // Un seul abonnement actif à la fois
+
+  // Relation vers la config du plan
+  tierId String
+  tier   SubscriptionTier @relation(fields: [tierId], references: [id])
+
+  status SubscriptionStatus @default(ACTIVE)
+
+  startDate DateTime @default(now())
+  endDate   DateTime // Calculé : startDate + 1 mois
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 3. Taux de change (USD vers CDF)
+model PaymentRate {
+  id        String   @id @default(cuid())
+  rate      Decimal // Ex: 2850.0
+  createdAt DateTime @default(now())
+}
+
+// =========================================================
+// MODÈLE SECTEUR
+// =========================================================
+
+model Sector {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  candidateProfiles CandidateProfile[]
+  jobOffers         JobOffer[]
+}
+
+// =========================================================
+// UTILISATEURS
+// =========================================================
+
+model User {
+  id            String   @id @default(cuid())
+  fullname      String?
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  password      String?
+  phone         String?  @unique
+  image         String?
+  role          UserRole @default(CANDIDATE)
+
+  otpCode      String?
+  otpExpiresAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  transactions        Transaction[]
+  candidateProfile    CandidateProfile?
+  companyProfile      CompanyProfile?
+  transactionRequests TransactionRequest[]
+  news                News[]
+
+  // Ajout de la relation vers l'abonnement actif
+  subscription UserSubscription?
+}
+
+// =========================================================
+// PROFIL CANDIDAT
+// =========================================================
+
+model CandidateProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  level      UserLevel @default(STUDENT)
+  university String?
+  skills     String[]
+  cvUrl      String?
+  birthday   DateTime?
+  city       String?
+  commune    String?
+  address    String?
+  about      String?
+
+  sectors                 Sector[]
+  notificationPreferences JobType[]
+
+  // Tu peux garder ces champs pour une lecture rapide côté frontend,
+  // mais la "vérité" sera désormais dans la table UserSubscription.
+  plan          SubscriptionPlan @default(FREE)
+  planExpiresAt DateTime?
+
+  applications        Application[]
+  monthlyApplications MonthlyApplication[]
+}
+
+// Suivi du quota (Reste inchangé)
+model MonthlyApplication {
+  id          String           @id @default(cuid())
+  candidateId String
+  candidate   CandidateProfile @relation(fields: [candidateId], references: [id])
+  monthYear   String
+  count       Int              @default(0)
+
+  @@unique([candidateId, monthYear])
+}
+
+// =========================================================
+// PROFIL ENTREPRISE & OFFRES (Reste inchangé)
+// =========================================================
+
+model CompanyProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  companyName String
+  description String?
+  website     String?
+  location    String?
+  logo        String?
+  industry    String?
+
+  jobOffers JobOffer[]
+}
+
+model JobOffer {
+  id           String  @id @default(cuid())
+  title        String
+  slug         String  @unique
+  description  String
+  detail       String?
+  coverImage   String?
+  type         JobType
+  location     String
+  requirements String?
+  viewCount    Int     @default(0)
+
+  deadline   DateTime
+  active     Boolean  @default(true)
+  visibility Boolean  @default(true)
+
+  sectors Sector[]
+
+  companyId String
+  company   CompanyProfile @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+}
+
+// =========================================================
+// CANDIDATURES & TRANSACTIONS
+// =========================================================
+
+model Application {
+  id     String            @id @default(cuid())
+  status ApplicationStatus @default(PENDING)
+
+  candidateId String
+  candidate   CandidateProfile @relation(fields: [candidateId], references: [id])
+
+  jobOfferId String
+  jobOffer   JobOffer @relation(fields: [jobOfferId], references: [id])
+
+  coverLetter String?
+  createdAt   DateTime @default(now())
+
+  @@unique([candidateId, jobOfferId])
+}
+
+model Transaction {
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  amount      Float
+  currency    String           @default("USD")
+  method      PaymentMethod
+  reference   String           @unique
+  orderNumber String?          @unique
+  planTarget  SubscriptionPlan
+  paidAt      DateTime         @default(now())
+}
+
+model TransactionRequest {
+  id          String                   @id @default(cuid())
+  userId      String
+  user        User                     @relation(fields: [userId], references: [id])
+  amount      Float
+  currency    String                   @default("USD")
+  method      PaymentMethod
+  reference   String                   @unique
+  orderNumber String?                  @unique
+  status      TransactionRequestStatus @default(PENDING)
+  planTarget  SubscriptionPlan
+  createdAt   DateTime                 @default(now())
+}
+
+// =========================================================
+// CONTENU SITE (Reste inchangé)
+// =========================================================
+
+model Partner {
+  id        String   @id @default(uuid())
+  logo      String
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Newsletter {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model News {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String   @unique
+  imageUrl  String?
+  content   String
+  userId    String
+  author    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  fullname  String
+  email     String   @unique
+  phone     String?  @unique
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Int      @default(0)
+}
+
+model Testimony {
+  id        String   @id @default(uuid())
+  fullname  String
+  photo     String?
+  post      String?
+  email     String   @unique
+  stars     Int
+  comment   String
+  createdAt DateTime @default(now())
+}
