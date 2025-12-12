@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { adminRegisterSchema } from "@/schemas/admin/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/utils/auth";
-import { UserRole } from "@prisma/client";
 import { authenticate } from "@/lib/authMiddleware";
 
 export async function POST(request: Request) {
@@ -26,7 +25,7 @@ export async function POST(request: Request) {
         email,
         password: hashedPassword,
         phone,
-        role: UserRole.ADMIN, // <-- ESSENTIEL : Définir le rôle Administrateur
+        role: "ADMIN", // <-- ESSENTIEL : Définir le rôle Administrateur
         emailVerified: true,
       },
       select: {

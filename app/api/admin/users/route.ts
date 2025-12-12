@@ -2,7 +2,6 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { UserRole } from "@prisma/client";
 import { authenticate } from "@/lib/authMiddleware";
 
 export async function GET(request: Request) {
@@ -38,10 +37,10 @@ export async function GET(request: Request) {
       let displayName = user.email; // Nom par défaut
       let profileDetails = {};
 
-      if (user.role === UserRole.COMPANY && user.companyProfile) {
+      if (user.role === "COMPANY" && user.companyProfile) {
         displayName = user.companyProfile.companyName;
         profileDetails = { location: user.companyProfile.location };
-      } else if (user.role === UserRole.CANDIDATE && user.candidateProfile) {
+      } else if (user.role === "CANDIDATE" && user.candidateProfile) {
         displayName = `${user.fullname}`;
         profileDetails = { university: user.candidateProfile.university };
       }

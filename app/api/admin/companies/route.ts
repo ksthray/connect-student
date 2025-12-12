@@ -3,7 +3,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { companyCreateSchema } from "@/schemas/admin/company";
-import { UserRole } from "@prisma/client";
 import { authenticate } from "@/lib/authMiddleware";
 import { hashPassword } from "@/utils/auth";
 
@@ -63,7 +62,7 @@ export async function POST(request: Request) {
           password: hashedPassword,
           phone: data.phone || null,
           fullname: data.fullname,
-          role: UserRole.COMPANY,
+          role: "COMPANY",
           emailVerified: true, // Créé par Admin, donc vérifié
         },
       });

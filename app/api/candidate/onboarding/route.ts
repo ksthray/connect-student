@@ -3,7 +3,6 @@
 import { NextResponse } from "next/server";
 import { candidateRegisterSchema } from "@/schemas/candidate/register";
 import { prisma } from "@/lib/prisma";
-import { UserRole } from "@prisma/client";
 
 // const sendVerificationEmail = (email: string, token: string) => {
 //   const verificationUrl = `${process.env.NEXT_PUBLIC_API}/verify?token=${token}`;
@@ -36,7 +35,7 @@ export async function POST(request: Request) {
       data: {
         fullname,
         email,
-        role: UserRole.CANDIDATE,
+        role: "CANDIDATE",
         candidateProfile: {
           create: {
             sectors: {

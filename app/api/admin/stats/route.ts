@@ -2,7 +2,6 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { UserRole } from "@prisma/client";
 import { authenticate } from "@/lib/authMiddleware";
 
 export async function GET(request: Request) {
@@ -23,8 +22,8 @@ export async function GET(request: Request) {
       totalApplications, // Assumez que le modèle Application est créé
     ] = await prisma.$transaction([
       prisma.user.count(),
-      prisma.user.count({ where: { role: UserRole.CANDIDATE } }),
-      prisma.user.count({ where: { role: UserRole.COMPANY } }),
+      prisma.user.count({ where: { role: "CANDIDATE" } }),
+      prisma.user.count({ where: { role: "COMPANY" } }),
       prisma.jobOffer.count(),
       prisma.jobOffer.count({ where: { active: true, visibility: true } }),
       prisma.application.count(), // Compte total des candidatures

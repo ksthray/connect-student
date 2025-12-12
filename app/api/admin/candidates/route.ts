@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { UserRole } from "@prisma/client";
 import { authenticate } from "@/lib/authMiddleware";
 import { calculateProfileCompletion } from "@/utils/profileScore";
 
@@ -16,7 +15,7 @@ export async function GET(request: Request) {
     // 2. LOGIQUE PRISMA : Récupérer tous les utilisateurs ayant le rôle CANDIDATE
     const candidates = await prisma.user.findMany({
       where: {
-        role: UserRole.CANDIDATE,
+        role: "CANDIDATE",
       },
       orderBy: {
         createdAt: "desc", // Trie les plus récents en premier
