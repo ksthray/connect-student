@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   try {
     // Vérifier si ce plan existe déjà (Unicité de l'Enum)
     const existing = await prisma.subscriptionTier.findUnique({
-      where: { name: data.name },
+      where: { name: data.name as "FREE" | "STANDARD" | "PREMIUM" },
     });
 
     if (existing) {
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
     const newTier = await prisma.subscriptionTier.create({
       data: {
-        name: data.name,
+        name: data.name as "FREE" | "STANDARD" | "PREMIUM",
         priceUSD: data.priceUSD,
         benefits: data.benefits,
         applicationLimit: data.applicationLimit,

@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { SubscriptionPlan } from "@prisma/client";
+
+const SubscriptionPlan = {
+  FREE: "FREE",
+  STANDARD: "STANDARD",
+  PREMIUM: "PREMIUM",
+};
 
 export const subscriptionTierSchema = z.object({
   name: z
