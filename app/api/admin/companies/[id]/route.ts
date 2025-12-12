@@ -62,7 +62,7 @@ export async function PUT(
     }
 
     // 5. Exécuter la mise à jour dans une transaction (User et CompanyProfile)
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // A. Mise à jour de l'utilisateur (si des données User sont fournies)
       if (Object.keys(userUpdateData).length > 0) {
         await tx.user.update({
@@ -131,7 +131,7 @@ export async function DELETE(request: Request, { params }: Params) {
     }
     const userId = existingProfile.userId;
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // A. Supprimer toutes les offres d'abord (si non géré par CASCADE sur JobOffer)
       // Ceci est CRUCIAL car les JobOffers pointent vers le CompanyProfile
       await tx.jobOffer.deleteMany({

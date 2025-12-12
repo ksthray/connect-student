@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     const hashedPassword = await hashPassword(data.password);
 
     // Utiliser une transaction pour garantir que User ET CompanyProfile sont créés ensemble
-    const newCompanyTransaction = await prisma.$transaction(async (tx) => {
+    const newCompanyTransaction = await prisma.$transaction(async (tx: any) => {
       // A. Création du User (rôle COMPANY)
       const newUser = await tx.user.create({
         data: {
