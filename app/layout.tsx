@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     default: "Accueil - Bienvenue à Connect Student",
   },
   description:
-    "Une plateforme EdtTech qui rélie les étudiants et jeunes diplômés aux entreprises pour faciliter leur insertion professionnelle à travers des opportunités de stages, d'emplois et de formations.",
+    "Une plateforme EdTech qui rélie les étudiants et jeunes diplômés aux entreprises pour faciliter leur insertion professionnelle à travers des opportunités de stages, d'emplois et de formations.",
   keywords: ["emploi", "job", "formations", "trouvez un emploi"],
   twitter: {
     card: "summary_large_image",
