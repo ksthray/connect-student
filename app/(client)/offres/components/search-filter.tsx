@@ -10,27 +10,29 @@ export default function SearchFilter() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-white via-blue-50/30 to-transparent">
-        <div className="max-w-4xl mx-auto text-center">
+    <div className="w-full">
+      <section className="w-full pt-32 pb-12 md:pt-40 md:pb-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-white via-blue-50/30 to-transparent">
+        <div className="w-full space-y-4 text-center flex flex-col justify-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
-            Discover Your Next{" "}
+            Découvrez votre prochaine{" "}
             <span className="bg-linear-to-r from-[#009ee2] to-[#00567a] bg-clip-text text-transparent">
-              Opportunity
+              opportunité
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Browse thousands of job offers, internships, and training programs
-            curated just for you. Find the role that matches your skills and
-            career goals.
+            Parcourez des milliers d&apos;offres d&apos;emploi, de stages et de
+            formations sélectionnées spécialement pour vous. Trouvez le poste
+            qui correspond à vos compétences et à vos objectifs de carrière.
           </p>
+          <Button className="mt-4 w-max mx-auto">
+            <Search size={24} /> Effectuer une recherche{" "}
+          </Button>
         </div>
       </section>
 
       {/* Search and Filter Section */}
-      <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-border sticky top-20 z-40">
+      {/* <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-border sticky top-20 z-40">
         <div className="max-w-6xl mx-auto space-y-6">
-          {/* Search Bar */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
@@ -41,7 +43,6 @@ export default function SearchFilter() {
             />
           </div>
 
-          {/* Filter Tabs */}
           <div className="flex flex-wrap gap-3">
             <Button
               onClick={() => setActiveTab("all")}
@@ -83,13 +84,11 @@ export default function SearchFilter() {
               Training
             </button>
           </div>
-
-          {/* Results Count */}
           <p className="text-sm text-muted-foreground">
             Showing {"10"} of {"78"} opportunities
           </p>
         </div>
-      </section>
-    </>
+      </section> */}
+    </div>
   );
 }

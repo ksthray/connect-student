@@ -90,6 +90,8 @@ const AddUserAdmin = ({ open, setopen }: Props) => {
       phone: values.phone as string,
     });
   }
+
+  console.log("error", form.formState.errors);
   return (
     <Dialog open={open} onOpenChange={setopen}>
       <DialogContent>
@@ -184,10 +186,21 @@ const AddUserAdmin = ({ open, setopen }: Props) => {
                   </FormItem>
                 )}
               />
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={mutation.isPending}>
+                {mutation.isPending ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  "Ajouter"
+                )}
+              </Button>
             </form>
           </Form>
         </div>
-        <DialogFooter className="pt-4">
+        {/* <DialogFooter className="pt-4">
           <Button
             type="button"
             variant="outline"
@@ -195,14 +208,8 @@ const AddUserAdmin = ({ open, setopen }: Props) => {
             className="border-2">
             Annuler
           </Button>
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              "Ajouter"
-            )}
-          </Button>
-        </DialogFooter>
+          
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

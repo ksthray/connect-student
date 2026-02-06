@@ -1,14 +1,14 @@
 import { Metadata } from "next";
-import Login from "./components/login";
+import AuthPage from "./components/auth";
 
 export const metadata: Metadata = {
   title: "Connexion - Connect Student",
 };
 
-export default function LoginPage() {
+export default function Page() {
   return (
     <main className="bg-gray-50">
-      <Login />
+      <AuthPage />
     </main>
   );
 }

@@ -13,25 +13,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useAuthStore } from "@/store/store";
+import { defaultImage, handleLogout } from "@/services/helpers";
 
 export default function HeaderUser() {
-  const [user] = useState({
-    name: "Camille Kongolo",
-    avatar: "/images/avatar.webp",
-  });
+  const user = useAuthStore((state) => state.admin);
 
   return (
     <header className="w-full bg-white border-b border-gray-200 shadow-sm fixed top-0 left-0 z-50">
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <Image
-            src="/images/connect-student-logo.png"
-            alt="Student Connect"
-            width={500}
-            height={500}
-            className="object-contain w-[100px] md:w-[120px] 2xl:w-[150px]"
-          />
+          <Link href={"/"}>
+            <Image
+              src="/images/connect-student-logo.png"
+              alt="Student Connect"
+              width={500}
+              height={500}
+              className="object-contain w-[100px] md:w-[120px] 2xl:w-[150px]"
+            />
+          </Link>
         </div>
 
         {/* Profil utilisateur */}
@@ -42,9 +44,12 @@ export default function HeaderUser() {
               className="flex items-center gap-3 rounded-full px-3 hover:bg-gray-100">
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src={user.image ?? defaultImage}
+                    alt={user.fullname}
+                  />
                   <AvatarFallback>
-                    {user.name
+                    {user.fullname
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
@@ -52,7 +57,7 @@ export default function HeaderUser() {
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-sm font-medium text-gray-700 hidden sm:block">
-                  {user.name}
+                  {user.fullname}
                 </span>
               </div>
             </Button>
@@ -63,12 +68,12 @@ export default function HeaderUser() {
             <DropdownMenuSeparator />
             <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
               <User size={16} />
-              Voir profil
+              <Link href={"/user/dashboard"}> Mon tableau de bord</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="flex items-center gap-2 text-red-600 cursor-pointer"
-              onClick={() => alert("Déconnexion...")}>
+              onClick={() => handleLogout(3)}>
               <LogOut size={16} />
               Se déconnecter
             </DropdownMenuItem>

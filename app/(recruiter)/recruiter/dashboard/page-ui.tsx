@@ -1,21 +1,70 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { OpportunityRecruiter } from "@/entities/types";
+import { frDate, returnNameOfJobType } from "@/services/helpers";
+import { useFetch } from "@/services/query";
 import {
   Briefcase,
-  Users,
   FileText,
-  TrendingUp,
   ArrowUpRight,
   ArrowDownRight,
+  Settings2,
 } from "lucide-react";
 import Link from "next/link";
 
-export default function RecruiterDashboard() {
+type DashboardType = {
+  stats: {
+    totalOffers: number;
+    totalApplications: number;
+  };
+  recentApplications: {
+    id: string;
+    status: "PENDING" | "REVIEWING" | "ACCEPTED" | "REJECTED";
+    createdAt: Date;
+    cvUrl: string;
+    jobOffer: {
+      title: string;
+    };
+    candidate: {
+      user: {
+        fullname: string;
+        email: string;
+      };
+      cvUrl: string | null;
+    };
+  }[];
+};
+
+export default function RecruiterDashboard({ token }: { token: string }) {
+  const { data, isLoading } = useFetch({
+    route: "/recruiter/dashboard",
+    query: "recruiter-dashboard",
+    params: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const { data: jobs, isLoading: isLoadingJobs } = useFetch({
+    route: "/recruiter/jobs?limit=5",
+    query: "opportunities",
+    params: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+
+  const opportunities: OpportunityRecruiter[] = jobs?.data || [];
+
+  const getData: DashboardType = data?.data || {};
+
   const kpis = [
     {
-      title: "Active Opportunities",
-      value: "12",
+      title: "Opportunités publiées",
+      value: getData?.stats?.totalOffers,
       change: "+2",
       isPositive: true,
       icon: Briefcase,
@@ -23,104 +72,27 @@ export default function RecruiterDashboard() {
     },
     {
       title: "Total Applications",
-      value: "487",
+      value: getData?.stats?.totalApplications,
       change: "+156",
       isPositive: true,
       icon: FileText,
       bgColor: "from-purple-500 to-pink-500",
     },
-    {
-      title: "Profile Views",
-      value: "2,341",
-      change: "+389",
-      isPositive: true,
-      icon: Users,
-      bgColor: "from-green-500 to-emerald-500",
-    },
-    {
-      title: "Conversion Rate",
-      value: "12.5%",
-      change: "+1.2%",
-      isPositive: true,
-      icon: TrendingUp,
-      bgColor: "from-orange-500 to-red-500",
-    },
   ];
 
-  const recentApplications = [
-    {
-      applicant: "Sarah Johnson",
-      position: "Senior Developer",
-      status: "reviewing",
-      appliedDate: "2 hours ago",
-      rating: 4.5,
-    },
-    {
-      applicant: "Michael Chen",
-      position: "Product Designer",
-      status: "shortlisted",
-      appliedDate: "1 day ago",
-      rating: 4.8,
-    },
-    {
-      applicant: "Emma Wilson",
-      position: "Marketing Manager",
-      status: "new",
-      appliedDate: "2 days ago",
-      rating: 4.2,
-    },
-    {
-      applicant: "David Brown",
-      position: "Data Analyst",
-      status: "reviewing",
-      appliedDate: "3 days ago",
-      rating: 4.0,
-    },
-    {
-      applicant: "Lisa Anderson",
-      position: "Senior Developer",
-      status: "rejected",
-      appliedDate: "5 days ago",
-      rating: 3.5,
-    },
-  ];
+  const recentApplications = getData?.recentApplications || [];
 
-  const topOpportunities = [
-    {
-      title: "Senior Developer",
-      type: "Job Offer",
-      applications: 124,
-      views: 1245,
-      status: "active",
-      postedDate: "2 weeks ago",
-    },
-    {
-      title: "UX/UI Design Internship",
-      type: "Internship",
-      applications: 89,
-      views: 856,
-      status: "active",
-      postedDate: "3 weeks ago",
-    },
-    {
-      title: "Marketing Training Program",
-      type: "Training Program",
-      applications: 156,
-      views: 1834,
-      status: "active",
-      postedDate: "1 week ago",
-    },
-  ];
+  const topOpportunities = opportunities || [];
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "new":
+      case "PENDING":
         return "bg-blue-100 text-blue-700";
-      case "reviewing":
+      case "REVIEWING":
         return "bg-yellow-100 text-yellow-700";
-      case "shortlisted":
+      case "ACCEPTED":
         return "bg-green-100 text-green-700";
-      case "rejected":
+      case "REJECTEED":
         return "bg-red-100 text-red-700";
       default:
         return "bg-gray-100 text-gray-700";
@@ -132,11 +104,10 @@ export default function RecruiterDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          Company Dashboard
+          Tableau de bord
         </h1>
         <p className="text-muted-foreground">
-          Welcome back! Here&apos;s an overview of your opportunities and
-          applications.
+          Bienvenue ! Voici un aperçu de vos opportunités et candidatures.
         </p>
       </div>
 
@@ -176,13 +147,13 @@ export default function RecruiterDashboard() {
         <div className="lg:col-span-2 bg-white rounded-xl border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-foreground">
-              Recent Applications
+              Récentes candidatures
             </h2>
             <Link href="/recruiter/applications">
               <Button
                 variant="ghost"
                 className="text-primary hover:bg-primary/10">
-                View All
+                Voir tout
               </Button>
             </Link>
           </div>
@@ -192,9 +163,9 @@ export default function RecruiterDashboard() {
               <div
                 key={idx}
                 className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-border">
-                <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-full flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 linear-premiere rounded-full flex items-center justify-center shrink-0">
                   <span className="text-white font-bold text-sm">
-                    {app.applicant
+                    {app?.candidate.user.fullname
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
@@ -202,22 +173,18 @@ export default function RecruiterDashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground">
-                    <span className="font-semibold">{app.applicant}</span>
+                    <span className="font-semibold">
+                      {app?.candidate.user.fullname}
+                    </span>
                     <span className="text-muted-foreground ml-2">
-                      for {app.position}
+                      pour {app?.jobOffer.title}
                     </span>
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {app.appliedDate}
+                    {frDate(app?.createdAt)}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-foreground">
-                      {app.rating}
-                    </p>
-                    <p className="text-xs text-muted-foreground">⭐</p>
-                  </div>
                   <span
                     className={`px-3 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${getStatusColor(
                       app.status
@@ -233,13 +200,13 @@ export default function RecruiterDashboard() {
         {/* Quick Actions */}
         <div className="bg-white rounded-xl border border-border p-6">
           <h2 className="text-xl font-bold text-foreground mb-6">
-            Quick Actions
+            Actions rapides{" "}
           </h2>
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <Link href="/recruiter/opportunities">
-              <Button className="w-full bg-linear-to-r from-primary to-secondary text-white justify-start gap-2">
+              <Button className="w-full bg-premiere hover:bg-premiere-foreground text-white justify-start gap-2">
                 <Briefcase className="w-4 h-4" />
-                Post New Opportunity
+                Publier une nouvelle opportunité
               </Button>
             </Link>
             <Link href="/recruiter/applications">
@@ -247,48 +214,17 @@ export default function RecruiterDashboard() {
                 variant="outline"
                 className="w-full justify-start gap-2 border-border">
                 <FileText className="w-4 h-4" />
-                View All Applications
+                Voir toutes les candidatures
               </Button>
             </Link>
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-2 border-border">
-              <Users className="w-4 h-4" />
-              View Company Profile
-            </Button>
-          </div>
-
-          {/* Stats Summary */}
-          <div className="mt-6 pt-6 border-t border-border space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground">
-                  Application Response Rate
-                </span>
-                <span className="text-sm font-bold text-secondary">68%</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-linear-to-r from-primary to-secondary"
-                  style={{ width: "68%" }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground">
-                  Profile Completion
-                </span>
-                <span className="text-sm font-bold text-secondary">95%</span>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-linear-to-r from-primary to-secondary"
-                  style={{ width: "95%" }}
-                />
-              </div>
-            </div>
+            <Link href="/recruiter/settings">
+              <Button
+                variant="outline"
+                className="w-full justify-start gap-2 border-border">
+                <Settings2 className="w-4 h-4" />
+                Voir le profil de l&apos;entreprise
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -297,13 +233,13 @@ export default function RecruiterDashboard() {
       <div className="bg-white rounded-xl border border-border p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-foreground">
-            Your Opportunities
+            Vos opportunités
           </h2>
           <Link href="/recruiter/opportunities">
             <Button
               variant="ghost"
               className="text-primary hover:bg-primary/10">
-              Manage All
+              Voir tout
             </Button>
           </Link>
         </div>
@@ -319,13 +255,13 @@ export default function RecruiterDashboard() {
                   Type
                 </th>
                 <th className="text-center py-3 px-4 font-semibold text-foreground text-sm">
-                  Applications
+                  Candidatures
                 </th>
                 <th className="text-center py-3 px-4 font-semibold text-foreground text-sm">
                   Views
                 </th>
                 <th className="text-left py-3 px-4 font-semibold text-foreground text-sm">
-                  Posted
+                  Publiée
                 </th>
                 <th className="text-center py-3 px-4 font-semibold text-foreground text-sm">
                   Status
@@ -339,28 +275,28 @@ export default function RecruiterDashboard() {
                   className="border-b border-border hover:bg-gray-50">
                   <td className="py-4 px-4">
                     <Link
-                      href={`/recruiter/opportunities/${idx}`}
+                      href={`/jobs/${opp?.slug}`}
                       className="font-medium text-primary hover:underline">
-                      {opp.title}
+                      {opp?.title}
                     </Link>
                   </td>
                   <td className="py-4 px-4 text-sm text-muted-foreground">
-                    {opp.type}
+                    {returnNameOfJobType(opp?.type)}
                   </td>
                   <td className="py-4 px-4 text-center">
                     <span className="font-semibold text-foreground">
-                      {opp.applications}
+                      {opp?._count.applications}
                     </span>
                   </td>
                   <td className="py-4 px-4 text-center text-muted-foreground">
-                    {opp.views}
+                    {opp.viewCount}
                   </td>
                   <td className="py-4 px-4 text-sm text-muted-foreground">
-                    {opp.postedDate}
+                    {frDate(opp.createdAt)}
                   </td>
                   <td className="py-4 px-4 text-center">
                     <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
-                      {opp.status.charAt(0).toUpperCase() + opp.status.slice(1)}
+                      {opp.active ? "Active" : "Desactivé"}
                     </span>
                   </td>
                 </tr>

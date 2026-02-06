@@ -12,3 +12,11 @@ export const verifyOtpSchema = z.object({
 });
 
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+
+export const registerSchema = z.object({
+  fullname: z.string().min(3, { message: "Le nom complet est requis." }),
+  email: z.string().email({ message: "Adresse e-mail invalide." }),
+  phone: z.string().min(8, { message: "Le numéro de téléphone est requis." }), // Adaptez la validation du téléphone
+});
+
+export type RegisterInput = z.infer<typeof registerSchema>;

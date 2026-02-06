@@ -15,7 +15,7 @@ const Why = () => {
       icon: Clock,
       title: "Économisez du Temps et des Ressources",
       description:
-        "Réduisez les coûts de recrutement et le temps d'embauche grâce à notre système de mise en relation intelligent.",
+        "Réduisez les coûts de recrutement et le temps d'embauche grâce à notre système de mise en relation.",
     },
     {
       icon: BarChart3,
@@ -34,7 +34,7 @@ const Why = () => {
     <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-12">
-          Pourquoi les Entreprises Choisissent Student Connect
+          Pourquoi les Entreprises Choisissent Connect Student
         </h2>
 
         <div className="grid md:grid-cols-2 gap-8">

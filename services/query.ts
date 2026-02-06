@@ -6,6 +6,7 @@ type Query = {
   route: string;
   query: string;
   params?: any;
+  refetch?: any;
 };
 
 const headers: Record<string, string> = {
@@ -24,7 +25,7 @@ export function useFetch({ route, query, params }: Query) {
       console.log(error);
     }
   };
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [query],
     queryFn: handleFetchData,
     refetchOnWindowFocus: true,
@@ -36,5 +37,6 @@ export function useFetch({ route, query, params }: Query) {
     data,
     isLoading,
     isError,
+    refetch,
   };
 }

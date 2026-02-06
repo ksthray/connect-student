@@ -1,7 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { socials_networks } from "@/services/helpers";
 import { ArrowRight, Zap } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const SocialNetwork = () => {
@@ -41,37 +44,13 @@ const SocialNetwork = () => {
             réseaux sociaux.
           </p>
 
-          <div className="flex justify-center gap-6 flex-wrap">
-            {[
-              {
-                name: "Twitter",
-                icon: "𝕏",
-                color: "from-slate-700 to-slate-900",
-              },
-              {
-                name: "LinkedIn",
-                icon: "in",
-                color: "from-blue-600 to-blue-800",
-              },
-              {
-                name: "Instagram",
-                icon: "📷",
-                color: "from-pink-500 to-rose-600",
-              },
-              {
-                name: "Facebook",
-                icon: "f",
-                color: "from-blue-500 to-blue-700",
-              },
-            ].map((social, idx) => (
-              <a
-                key={idx}
-                href="#"
-                className={`w-14 h-14 rounded-full bg-linear-to-br ${social.color} flex items-center justify-center text-white font-bold text-lg hover:shadow-lg hover:scale-110 transition-all`}
-                title={social.name}>
-                {social.icon}
-              </a>
+          <div className="flex justify-center gap-12 flex-wrap">
+            {socials_networks.map((social, index) => (
+              <Link key={index} href={social.url} target="_blank" className="hover:text-premiere hover:translate-y-[-5px] transition-all duration-300">
+                <Image src={social.icon} alt={social.name} width={400} height={24} className="w-12" />
+              </Link>
             ))}
+
           </div>
         </div>
       </section>
@@ -94,8 +73,10 @@ const SocialNetwork = () => {
           </p>
 
           <Button className="bg-white text-primary hover:bg-blue-50 text-base px-8 h-12 rounded-lg font-semibold">
-            Écrivez-nous sur Whatsapp
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <Link href="https://wa.me/+243854487045" target="_blank" className="flex items-center gap-2">
+              Écrivez-nous sur Whatsapp
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
           </Button>
         </div>
       </section>

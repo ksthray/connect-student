@@ -108,9 +108,11 @@ export default function Companies({ token }: { token: string }) {
       header: "Site Web",
       cell: ({ row }) => (
         <div className="text-sm">
-          <Link href={row.getValue("website")} target="_blank">
-            Visitez le site web
-          </Link>
+          {row.original.website && (
+            <Link href={row.getValue("website")} target="_blank">
+              Visitez le site web
+            </Link>
+          )}
         </div>
       ),
     },

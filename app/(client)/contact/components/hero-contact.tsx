@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 const HeroContact = () => {
@@ -9,30 +10,30 @@ const HeroContact = () => {
       icon: Mail,
       title: "Courriel",
       description: "Nous vous répondrons dans les 24 heures",
-      value: "hello@studentconnect.com",
-      href: "mailto:hello@studentconnect.com",
+      value: "contact@connect-student.com",
+      href: "mailto:contact@connect-student.com",
       type: "link",
     },
     {
       icon: Phone,
       title: "Téléphone",
-      description: "Lun-Ven, 9h-18h HNE",
-      value: "+1 (555) 123-4567",
-      href: "tel:+15551234567",
+      description: "Lun-Ven, 8h30 - 16h30",
+      value: "+243 854 487 045",
+      href: "tel:+243854487045",
       type: "link",
     },
     {
       icon: MapPin,
       title: "Bureau",
-      description: "Visitez-nous à San Francisco",
-      value: "123 Tech Street, San Francisco, CA 94103",
+      description: "Visitez-nous à Kinshasa",
+      value: "Avenue OUA, N°01, Quartier Basoko, Commune de Ngaliema, Kinshasa – République Démocratique du Congo",
       href: null,
       type: "text",
     },
     {
       icon: Clock,
       title: "Délai de Réponse",
-      description: "Habituellement dans un délai de 1 à 2 jours ouvrables",
+      description: "Chaque message reçoit une réponse dans un délai de 24 à 48 heures ouvrables, selon la nature de la demande",
       value: "Rapide & Fiable",
       href: null,
       type: "text",
@@ -49,9 +50,8 @@ const HeroContact = () => {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Vous avez des questions ou des commentaires ? Nous serions ravis de
-            vous entendre. Notre équipe est là pour vous aider et vous répondra
-            dans les plus brefs délais.
+            Vous avez une question, une proposition de partenariat ou besoin d’assistance ?
+            L’équipe Connect Student est à votre écoute.
           </p>
         </div>
       </section>
@@ -82,11 +82,11 @@ const HeroContact = () => {
                     {method.description}
                   </p>
                   {method.type === "link" ? (
-                    <a
+                    <Link
                       href={method.href || "#"}
-                      className="text-secondary font-semibold hover:text-primary transition-colors block">
+                      className="text-black font-semibold hover:text-premiere transition-colors block">
                       {method.value}
-                    </a>
+                    </Link>
                   ) : (
                     <p className="text-foreground font-semibold">
                       {method.value}

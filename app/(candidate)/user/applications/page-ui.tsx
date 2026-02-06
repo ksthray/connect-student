@@ -9,107 +9,64 @@ import {
   XCircle,
   Search,
   Eye,
-  MessageSquare,
   Trash2,
 } from "lucide-react";
+import { useFetch } from "@/services/query";
+import {
+  frDate,
+  getTypeBgColor,
+  returnNameOfJobType,
+} from "@/services/helpers";
+import Link from "next/link";
 
-interface Application {
-  id: number;
-  position: string;
-  company: string;
-  type: "job_offer" | "internship" | "training";
-  location: string;
-  status: "pending" | "reviewing" | "accepted" | "rejected";
-  appliedDate: string;
-  salary?: string;
-  companyImage: string;
-  lastUpdate: string;
-  notes: string;
-}
+type ApplicationType = {
+  applications: {
+    id: string;
+    status: "PENDING" | "REVIEWING" | "ACCEPTED" | "REJECTED";
+    createdAt: Date;
+    jobOffer: {
+      title: string;
+      description: string;
+      slug: string;
+      location: string;
+      deadline: Date;
+      type:
+        | "INTERNSHIP"
+        | "FULL_TIME"
+        | "PART_TIME"
+        | "EVENT"
+        | "CONFERENCE"
+        | "TRAINING";
+      company: {
+        companyName: string;
+      };
+    };
+  }[];
+  stats: {
+    applicationsSent: number;
+    pending: number;
+    reviewing: number;
+    accepted: number;
+    rejected: number;
+  };
+};
 
-export default function CandidateApplications() {
-  const [applications, setApplications] = useState<Application[]>([
-    {
-      id: 1,
-      position: "Senior Developer",
-      company: "Tech Innovations Inc.",
-      type: "job_offer",
-      location: "San Francisco, CA",
-      status: "reviewing",
-      appliedDate: "3 days ago",
-      salary: "$120k - $150k",
-      companyImage: "tech_innovations.jpg",
-      lastUpdate: "2 hours ago",
-      notes:
-        "Your profile has been shortlisted. Expect an interview invitation soon.",
+export default function CandidateApplications({ token }: { token: string }) {
+  const { data, isLoading } = useFetch({
+    route: "/candidate/applications",
+    query: "applications-candidate",
+    params: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
-    {
-      id: 2,
-      position: "UX/UI Designer Internship",
-      company: "Creative Minds Agency",
-      type: "internship",
-      location: "New York, NY",
-      status: "accepted",
-      appliedDate: "1 week ago",
-      salary: "Unpaid",
-      companyImage: "creative_minds.jpg",
-      lastUpdate: "3 days ago",
-      notes:
-        "Congratulations! You have been accepted. Check your email for next steps.",
-    },
-    {
-      id: 3,
-      position: "Data Analyst",
-      company: "Finance Forward Group",
-      type: "job_offer",
-      location: "Chicago, IL",
-      status: "rejected",
-      appliedDate: "2 weeks ago",
-      salary: "$80k - $100k",
-      companyImage: "finance_forward.jpg",
-      lastUpdate: "1 week ago",
-      notes:
-        "Thank you for your interest. We have decided to move forward with other candidates.",
-    },
-    {
-      id: 4,
-      position: "Frontend Engineer",
-      company: "Global Solutions Ltd",
-      type: "job_offer",
-      location: "Remote",
-      status: "pending",
-      appliedDate: "5 days ago",
-      salary: "$100k - $130k",
-      companyImage: "global_solutions.jpg",
-      lastUpdate: "5 days ago",
-      notes: "Your application is being reviewed by the hiring team.",
-    },
-    {
-      id: 5,
-      position: "Product Manager Training Program",
-      company: "Leadership Academy",
-      type: "training",
-      location: "Online",
-      status: "pending",
-      appliedDate: "1 week ago",
-      companyImage: "leadership_academy.jpg",
-      lastUpdate: "1 week ago",
-      notes: "We will notify you within 5-7 business days.",
-    },
-    {
-      id: 6,
-      position: "Backend Developer",
-      company: "StartUp Solutions",
-      type: "job_offer",
-      location: "Boston, MA",
-      status: "reviewing",
-      appliedDate: "1 day ago",
-      salary: "$110k - $140k",
-      companyImage: "startup_solutions.jpg",
-      lastUpdate: "4 hours ago",
-      notes: "Initial screening completed. Moving to next round.",
-    },
-  ]);
+  });
+
+  const getData: ApplicationType = data?.data || {};
+
+  const stats = getData?.stats || ({} as ApplicationType["stats"]);
+  const applications =
+    getData?.applications || ([] as ApplicationType["applications"]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -117,30 +74,25 @@ export default function CandidateApplications() {
 
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
-      app.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.company.toLowerCase().includes(searchTerm.toLowerCase());
+      app.jobOffer.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.jobOffer.company.companyName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === "all" || app.status === filterStatus;
-    const matchesType = filterType === "all" || app.type === filterType;
+    const matchesType =
+      filterType === "all" || app.jobOffer.type === filterType;
     return matchesSearch && matchesStatus && matchesType;
   });
 
-  const stats = {
-    total: applications.length,
-    pending: applications.filter((a) => a.status === "pending").length,
-    reviewing: applications.filter((a) => a.status === "reviewing").length,
-    accepted: applications.filter((a) => a.status === "accepted").length,
-    rejected: applications.filter((a) => a.status === "rejected").length,
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return "bg-blue-100 text-blue-700";
-      case "reviewing":
+      case "REVIEWING":
         return "bg-yellow-100 text-yellow-700";
-      case "accepted":
+      case "ACCEPTED":
         return "bg-green-100 text-green-700";
-      case "rejected":
+      case "REJECTED":
         return "bg-red-100 text-red-700";
       default:
         return "bg-gray-100 text-gray-700";
@@ -149,59 +101,30 @@ export default function CandidateApplications() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return <Clock className="w-4 h-4" />;
-      case "reviewing":
+      case "REVIEWING":
         return <Eye className="w-4 h-4" />;
-      case "accepted":
+      case "ACCEPTED":
         return <CheckCircle className="w-4 h-4" />;
-      case "rejected":
+      case "REJECTED":
         return <XCircle className="w-4 h-4" />;
       default:
         return null;
     }
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "job_offer":
-        return "bg-blue-50 border-blue-200";
-      case "internship":
-        return "bg-purple-50 border-purple-200";
-      case "training":
-        return "bg-green-50 border-green-200";
-      default:
-        return "bg-gray-50 border-gray-200";
-    }
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case "job_offer":
-        return "Job Offer";
-      case "internship":
-        return "Internship";
-      case "training":
-        return "Training";
-      default:
-        return type;
-    }
-  };
-
-  const handleWithdraw = (id: number) => {
-    setApplications(applications.filter((app) => app.id !== id));
-  };
+  // const handleWithdraw = (id: number) => {
+  //   setApplications(applications.filter((app) => app.id !== id));
+  // };
 
   return (
     <div className="space-y-8 p-10">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          My Applications
+          Mes candidatures
         </h1>
-        <p className="text-muted-foreground">
-          Track all your job applications and their current status.
-        </p>
       </div>
 
       {/* Stats Cards */}
@@ -210,14 +133,16 @@ export default function CandidateApplications() {
           <p className="text-xs font-medium text-muted-foreground mb-2">
             Total
           </p>
-          <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+          <p className="text-2xl font-bold text-foreground">
+            {stats.applicationsSent}
+          </p>
         </div>
         <div className="bg-white rounded-lg border border-border p-4">
-          <p className="text-xs font-medium text-blue-600 mb-2">Pending</p>
+          <p className="text-xs font-medium text-blue-600 mb-2">En attente</p>
           <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
         </div>
         <div className="bg-white rounded-lg border border-border p-4">
-          <p className="text-xs font-medium text-yellow-600 mb-2">Reviewing</p>
+          <p className="text-xs font-medium text-yellow-600 mb-2">Vue</p>
           <p className="text-2xl font-bold text-foreground">
             {stats.reviewing}
           </p>
@@ -238,7 +163,7 @@ export default function CandidateApplications() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by position or company..."
+              placeholder="Chercher par ville or compagnie..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 border-border"
@@ -249,21 +174,24 @@ export default function CandidateApplications() {
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
             className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/30 bg-white">
-            <option value="all">All Types</option>
-            <option value="job_offer">Job Offers</option>
-            <option value="internship">Internships</option>
-            <option value="training">Training Programs</option>
+            <option value="all">Tous les types</option>
+            <option value="INTERNSHIP">Stages</option>
+            <option value="FULL_TIME">Emploi - Temps plein</option>
+            <option value="PART_TIME">Emploi - Temps partiel</option>
+            <option value="EVENT">Événement</option>
+            <option value="CONFERENCE">Conférence</option>
+            <option value="TRAINING">Formation</option>
           </select>
 
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
             className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/30 bg-white">
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="reviewing">Reviewing</option>
-            <option value="accepted">Accepted</option>
-            <option value="rejected">Rejected</option>
+            <option value="all">Tout les status</option>
+            <option value="pending">En entante</option>
+            <option value="reviewing">Vue</option>
+            <option value="accepted">Acceptée</option>
+            <option value="rejected">Rejetée</option>
           </select>
         </div>
       </div>
@@ -273,28 +201,28 @@ export default function CandidateApplications() {
         {filteredApplications.length === 0 ? (
           <div className="bg-white rounded-xl border border-border p-12 text-center">
             <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-            <p className="text-muted-foreground">No applications found</p>
+            <p className="text-muted-foreground">Pas des canditures trouvées</p>
           </div>
         ) : (
           filteredApplications.map((app) => (
             <div
               key={app.id}
-              className={`rounded-xl border ${getTypeColor(
-                app.type
-              )} p-6 hover:shadow-lg transition-all`}>
+              className={`rounded-xl border ${getTypeBgColor(
+                app.jobOffer.type
+              )} w-full p-2 md:p-6 hover:shadow-lg transition-all`}>
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex gap-4 flex-1">
-                  <div className="w-16 h-16 bg-linear-to-br from-primary to-secondary rounded-lg flex items-center justify-center shrink-0">
+                  <div className="w-16 h-16 hidden md:flex linear-premiere rounded-lg items-center justify-center shrink-0">
                     <Briefcase className="w-8 h-8 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
                         <h3 className="text-lg font-semibold text-foreground">
-                          {app.position}
+                          {app.jobOffer.location}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {app.company}
+                          {app.jobOffer.company.companyName}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 ml-2">
@@ -310,52 +238,60 @@ export default function CandidateApplications() {
                     </div>
 
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-2">
-                      <span>{app.location}</span>
+                      <span>{app.jobOffer.location}</span>
                       <span>•</span>
-                      <span>{getTypeLabel(app.type)}</span>
-                      {app.salary && (
-                        <>
-                          <span>•</span>
-                          <span className="font-medium text-foreground">
-                            {app.salary}
-                          </span>
-                        </>
-                      )}
+                      <span>{returnNameOfJobType(app.jobOffer.type)}</span>
                     </div>
 
                     <div className="bg-white bg-opacity-50 rounded-lg p-3 my-3">
-                      <p className="text-sm text-foreground">{app.notes}</p>
+                      <p className="text-sm text-foreground">
+                        {app.jobOffer.description}
+                      </p>
                     </div>
 
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>Applied {app.appliedDate}</span>
+                      <span>Applied {frDate(app.createdAt)}</span>
                       <span>•</span>
-                      <span>Last update: {app.lastUpdate}</span>
+                      <span>Date limite: {frDate(app.jobOffer.deadline)}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-4 border-t border-current border-opacity-10">
+              <div className="w-full flex flex-wrap gap-2 pt-4 border-t border-current border-opacity-10">
                 <Button
                   variant="outline"
+                  asChild
                   className="border-current text-current">
-                  <Eye className="w-4 h-4 mr-2" />
-                  View Details
+                  <Link href={`/offres/${app.jobOffer.slug}`}>
+                    <Eye className="w-4 h-4 mr-2" />
+                    Voir l&apos;offre
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-current text-current">
+                  <Link href={`https://wa.me/+243854487045`}>
+                    <svg
+                      width="24px"
+                      height="24px"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <title>WhatsApp icon</title>
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                    </svg>
+                    Contact nous sur Whatsapp
+                  </Link>
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-current text-current">
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                  Contact
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-red-200 text-red-600 hover:bg-red-50 ml-auto"
-                  onClick={() => handleWithdraw(app.id)}>
+                  className="border-red-200 text-red-600 hover:bg-red-50 md:ml-auto"
+                  onClick={() => {}}>
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Withdraw
+                  Retirer
                 </Button>
               </div>
             </div>

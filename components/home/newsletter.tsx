@@ -1,36 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, CheckCircle } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
+import api from "@/services/api";
+import { toast } from "sonner";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email) {
-      return;
-    }
-
-    setLoading(true);
+    setIsLoading(true);
 
     try {
-      // Simulation d’un appel API pour l’inscription à la newsletter
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setSubmitted(true);
-      setEmail("");
+      // Simulation d'appel API (Remplace ceci par ton vrai appel axios/fetch)
+      const res = await api.post("/candidate/newsletter", { email });
+      if (res.data.state) {
+        toast.success("Merci ! Vous êtes bien inscrit à notre newsletter.");
+      }
 
-      // Réinitialiser le message de succès après 5 secondes
-      setTimeout(() => setSubmitted(false), 5000);
-    } catch (error) {
-      console.error("Erreur lors de l’inscription à la newsletter :", error);
+      setEmail(""); // Reset du champ
+    } catch (error: any) {
+      console.log(error);
+
+      toast.error(error.response?.data?.message || "Une erreur est survenue.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -56,32 +55,25 @@ export default function Newsletter() {
         </p>
 
         {/* Formulaire Newsletter */}
-        {!submitted ? (
-          <form
-            onSubmit={handleSubscribe}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Entre ton adresse e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="bg-white border-2 border-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 h-12 px-4"
-              disabled={loading}
-            />
-            <Button
-              type="submit"
-              disabled={loading}
-              className="linear-premiere text-white font-semibold h-12 px-8 rounded-lg whitespace-nowrap">
-              {loading ? "Inscription en cours..." : "S’abonner"}
-            </Button>
-          </form>
-        ) : (
-          <div className="flex items-center justify-center gap-3 text-green-600 bg-green-50 px-6 py-4 rounded-lg">
-            <CheckCircle className="w-5 h-5" />
-            <span className="font-semibold">Merci pour ton inscription !</span>
-          </div>
-        )}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <Input
+            type="email"
+            placeholder="Entre ton adresse e-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="bg-white border-2 border-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 h-12 px-4"
+            disabled={isLoading}
+          />
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="linear-premiere text-white font-semibold h-12 px-8 rounded-lg whitespace-nowrap">
+            {isLoading ? <Loader2 className="animate-spin" /> : "S’abonner"}
+          </Button>
+        </form>
 
         {/* Note de confidentialité */}
         <p className="text-sm text-muted-foreground mt-6">

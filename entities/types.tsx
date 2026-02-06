@@ -20,6 +20,18 @@ export type UserAdmin = {
   phone?: string | E164Number | null;
   image?: string | null;
   role: "ADMIN" | "CANDIDATE" | "COMPANY";
+  subscription?: UserSubcriptionType;
+};
+
+type UserSubcriptionType = {
+  id: string;
+  tierId: string;
+  tier: PlanSubscriptionType;
+
+  status: "ACTIVE" | "DESACTIVE";
+
+  startDate: Date;
+  endDate: Date;
 };
 
 export type CandidateType = UserAdmin & {
@@ -136,4 +148,82 @@ export type PlanSubscriptionType = {
   notifiedLimit: number;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type MyProfilType = {
+  id: string;
+  fullname: string;
+  email: string;
+  phone: string;
+  image: string | undefined;
+  emailVerified: boolean;
+  candidateProfile: {
+    level: "STUDENT" | "GRADUATE" | "PROFESSIONAL";
+    sectors: {
+      id: string;
+      name: string;
+      slug: string;
+    }[];
+    university?: string | undefined;
+    skills: string[];
+    cvUrl?: string | undefined;
+    about?: string | undefined;
+    city?: string | undefined;
+    commune?: string | undefined;
+    address?: string | undefined;
+    birthday?: Date | undefined;
+  };
+};
+
+export type TestimonyType = {
+  id: string;
+  fullname: string;
+  photo?: string;
+  post?: string;
+  email: string;
+  stars: number; // 1 à 5
+  comment?: string;
+  createdAt: Date;
+};
+
+export type ContactType = {
+  id: string;
+  fullname: string;
+  email: string;
+  phone?: string;
+  message: string;
+  createdAt: Date;
+};
+
+export type NewsletterType = {
+  id: string;
+  email: string;
+  createdAt: Date;
+};
+
+export type OpportunityRecruiter = {
+  id: string;
+  description: string;
+  detail: string | null;
+  slug: string;
+  title: string;
+  type:
+    | "INTERNSHIP"
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "CONFERENCE"
+    | "EVENT"
+    | "TRAINING";
+  location: string;
+  visibility: boolean;
+  requirements: string;
+  coverImage: string;
+  sectors: SectorType[];
+  active: boolean;
+  deadline: Date;
+  createdAt: Date;
+  viewCount: number;
+  _count: {
+    applications: number;
+  };
 };

@@ -8,6 +8,7 @@ import {
   BarChart2,
   BarChart3,
   CreditCard,
+  Mailbox,
 } from "lucide-react";
 import { NavMain } from "@/components/templates/admin/nav-main";
 import { NavUser } from "@/components/templates/admin/nav-user";
@@ -64,6 +65,21 @@ const data = {
       title: "Administrateurs",
       url: "/panel-admin/gestion-admin",
       icon: Users,
+    },
+    {
+      title: "Gestion des temoignages",
+      url: "/panel-admin/testimonials",
+      icon: Users,
+    },
+    {
+      title: "Newsletter",
+      url: "/panel-admin/newsletters",
+      icon: Mailbox,
+    },
+    {
+      title: "Contact",
+      url: "/panel-admin/contacts",
+      icon: Mailbox,
     },
   ],
 };

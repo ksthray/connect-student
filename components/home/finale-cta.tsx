@@ -31,9 +31,11 @@ export default function FinalCTA() {
 
         {/* Appels à l’action */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button className="bg-white text-primary hover:bg-blue-50 text-base px-8 h-12 rounded-lg font-semibold">
-            Créer mon compte maintenant
-            <ArrowRight className="w-4 h-4 ml-2" />
+          <Button asChild className="bg-white text-primary hover:bg-blue-50 text-base px-8 h-12 rounded-lg font-semibold">
+            <Link href={"/connexion?tab=account"} className="flex items-center gap-2">
+              Créer mon compte maintenant
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
           </Button>
           <Button
             asChild

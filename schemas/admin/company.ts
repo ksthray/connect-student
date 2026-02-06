@@ -13,11 +13,7 @@ export const companyCreateSchema = z.object({
     .string()
     .min(8, "Le mot de passe doit avoir au moins 8 caractères."),
   description: z.string().optional(),
-  website: z
-    .string()
-    .url("Format de site web invalide.")
-    .optional()
-    .or(z.literal("")),
+  website: z.string().optional(),
   location: z.string().optional(),
   industry: z.string().optional(),
   logo: z.string().optional(),
