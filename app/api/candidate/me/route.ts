@@ -1,68 +1,83 @@
-// Dans le fichier app/api/user/me/route.ts
+// Dans le fichier app/api/candidate/me/route.ts
 
-import { candidateAuthMiddleware } from "@/lib/candidateMiddleware";
+import { userAuthMiddleware } from "@/lib/userAuthMiddleware";
 import { prisma } from "@/lib/prisma";
 import { calculateProfileCompletion } from "@/utils/profileScore";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   // 1. RÉCUPÉRATION SÉCURISÉE DE L'ID UTILISATEUR
-  const authUser = candidateAuthMiddleware(request);
+  const { isAuthenticated, user } = userAuthMiddleware(request);
 
-  if (!authUser) {
-    // Si pas de token ou token invalide, refuser l'accès
+  if (!isAuthenticated || user?.role !== "CANDIDATE") {
     return NextResponse.json(
-      { error: "Non autorisé ou token manquant." },
+      {
+        state: false,
+        message: "Accès refusé. Non authentifié ou rôle incorrect.",
+      },
       { status: 401 }
     );
   }
 
-  const userId = authUser.id;
+  const userId = user.id;
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      fullname: true,
-      email: true,
-      phone: true,
-      role: true,
-      candidateProfile: {
-        select: {
-          level: true,
-          sectors: true,
-          university: true,
-          skills: true,
-          cvUrl: true,
-          about: true,
+  try {
+    const getUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        fullname: true,
+        email: true,
+        phone: true,
+        role: true,
+        candidateProfile: {
+          select: {
+            level: true,
+            sectors: true,
+            university: true,
+            skills: true,
+            cvUrl: true,
+            about: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  if (!user) {
-    return new Response("User not found", { status: 404 });
+    if (!getUser) {
+      return new Response("User not found", { status: 404 });
+    }
+
+    const candidateProfileData = getUser.candidateProfile;
+
+    // 2. Calcul du score
+    const score = calculateProfileCompletion({
+      user: {
+        fullname: getUser.fullname,
+        email: getUser.email,
+        phone: getUser.phone,
+      },
+      candidateProfile: {
+        level: candidateProfileData?.level || null,
+        sectors: candidateProfileData?.sectors || null,
+        university: candidateProfileData?.university || null,
+        skills: candidateProfileData?.skills || [],
+        cvUrl: candidateProfileData?.cvUrl || null,
+        about: candidateProfileData?.about || null,
+      },
+    });
+
+    // 3. Réponse au Frontend
+    return Response.json({
+      ...user,
+      profileCompletionScore: score,
+    });
+  } catch (error) {
+    console.error("Erreur lors du user:", error);
+    return NextResponse.json(
+      {
+        state: false,
+        message: "Erreur interne lors de la récupération des données.",
+      },
+      { status: 500 }
+    );
   }
-
-  // 2. Calcul du score
-  const score = calculateProfileCompletion({
-    user: {
-      fullname: user.fullname,
-      email: user.email,
-      phone: user.phone,
-    },
-    candidateProfile: {
-      level: user.candidateProfile?.level || "",
-      sectors: user.candidateProfile?.sectors || [],
-      university: user.candidateProfile?.university || null,
-      skills: user.candidateProfile?.skills || [],
-      cvUrl: user.candidateProfile?.cvUrl || null,
-      about: user.candidateProfile?.about || null,
-    },
-  });
-
-  // 3. Réponse au Frontend
-  return Response.json({
-    ...user,
-    profileCompletionScore: score,
-  });
 }

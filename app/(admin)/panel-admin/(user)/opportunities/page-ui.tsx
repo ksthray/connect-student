@@ -99,22 +99,6 @@ export default function Opportunities({ token }: { token: string }) {
       ),
     },
     {
-      accessorKey: "active",
-      header: "Actif",
-      cell: ({ row }) => {
-        const item = row.original;
-        return (
-          <div className="capitalize">
-            <Switch
-              checked={item.active}
-              id="active"
-              // onCheckedChange={(v) => handleSwitchData(item.id as string, 0)}
-            />
-          </div>
-        );
-      },
-    },
-    {
       accessorKey: "visibility",
       header: "Visible",
       cell: ({ row }) => {

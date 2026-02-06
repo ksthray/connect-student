@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Facebook, Instagram, Linkedin, Music2 } from "lucide-react";
+import { socials_networks } from "@/services/helpers";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -24,28 +26,26 @@ export default function Footer() {
 
         {/* Produits */}
         <div>
-          <h4 className="font-semibold mb-3">Produits</h4>
+          <h4 className="font-semibold mb-3">Services</h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="#" className="hover:text-premiere">
+              <Link href="/" className="hover:text-premiere">
                 Accueil
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-premiere">
+              <Link href="/offres" className="hover:text-premiere">
                 Les offres
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-premiere">
+              <Link href="/entreprise" className="hover:text-premiere">
                 Pour les entreprises
-              </a>
+              </Link>
             </li>
-            <li>
-              <a href="#" className="hover:text-premiere">
-                Tarifs
-              </a>
-            </li>
+            <Link href="/pricing" className="hover:text-premiere">
+              Tarifs
+            </Link>
           </ul>
         </div>
 
@@ -54,14 +54,14 @@ export default function Footer() {
           <h4 className="font-semibold mb-3">Entreprise</h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="#" className="hover:text-premiere">
+              <Link href="/a-propos" className="hover:text-premiere">
                 À propos
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="hover:text-premiere">
+              <Link href="/contact" className="hover:text-premiere">
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -71,46 +71,39 @@ export default function Footer() {
           <h4 className="font-semibold mb-3">Entrer en contact</h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="mailto:hello@studentconnect.com" className="underline">
-                hello@studentconnect.com
-              </a>
+              <Link href="mailto:contact@connect-student.com" className="underline">
+                contact@connect-student.com
+              </Link>
             </li>
-            <li>+234820091675</li>
-            <li>123 Tech Street, Innovation City, IC 12345</li>
             <li>
-              <a href="#" className="hover:text-premiere">
-                Tarifs
-              </a>
+              <Link href="tel:+243854487045" className="underline">
+                +243 854 487 045
+              </Link>
             </li>
+            <li>Avenue OUA, N°01, Quartier Basoko, Commune de Ngaliema,
+              Kinshasa – République Démocratique du Congo</li>
           </ul>
 
           <div className="flex space-x-3 mt-4">
-            <a href="#" className="hover:text-premiere">
-              <Music2 className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-premiere">
-              <Linkedin className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-premiere">
-              <Instagram className="w-5 h-5" />
-            </a>
-            <a href="#" className="hover:text-premiere">
-              <Facebook className="w-5 h-5" />
-            </a>
+            {socials_networks.map((social, index) => (
+              <Link key={index} href={social.url} target="_blank" className="hover:text-premiere hover:translate-y-[-5px] transition-all duration-300">
+                <Image src={social.icon} alt={social.name} width={24} height={24} className="" />
+              </Link>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Bas du footer */}
-      <div className="border-t border-gray-300 py-4 text-center text-sm text-gray-200 flex flex-col md:flex-row justify-between items-center px-6">
+      <div className="border-t border-gray-700 py-4 text-center text-sm text-gray-200 flex flex-col md:flex-row justify-between items-center px-6">
         <p>© 2025 Student Connect. Tous droits réservés.</p>
         <div className="flex gap-4 mt-2 md:mt-0">
-          <a href="#" className="hover:text-premiere">
+          <Link href="/pdf/pdc.pdf" target="_blank" className="hover:text-premiere">
             Politique de confidentialité
-          </a>
-          <a href="#" className="hover:text-premiere">
+          </Link>
+          <Link href="/pdf/cgu.pdf" target="_blank" className="hover:text-premiere">
             Conditions d&apos;utilisation
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

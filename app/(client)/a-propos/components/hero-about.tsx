@@ -15,10 +15,8 @@ const HeroAbout = () => {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Student Connect est plus qu&apos;un simple tableau d&apos;offres
-            d&apos;emploi. Nous sommes un pont entre l&apos;ambition et
-            l&apos;opportunité, mettant en relation les étudiants et diplômés
-            talentueux avec des rôles qui correspondent à leurs rêves.
+            Connect Student est une startup EdTech qui relie les étudiants et jeunes diplômés aux entreprises afin de faciliter leur insertion professionnelle à travers des opportunités de stages, d’emplois et de formations.
+
           </p>
         </div>
       </section>
@@ -36,13 +34,7 @@ const HeroAbout = () => {
                 Notre Mission
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Donner aux étudiants et aux jeunes diplômés un accès intelligent
-                et personnalisé à des opportunités de carrière qui correspondent
-                à leurs compétences, intérêts et aspirations uniques.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Nous croyons que chacun mérite une chance équitable de découvrir
-                des postes où il peut s&apos;épanouir et grandir.
+                Notre mission est de relier les étudiants et diplômés aux entreprises à travers une plateforme intelligente dotée des fonctionnalités faciles à utiliser, pour créer des opportunités de stage, d’emploi et de développement des carrières professionnelles.
               </p>
             </div>
 
@@ -56,13 +48,7 @@ const HeroAbout = () => {
                 Notre Vision
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Un monde où chaque étudiant peut facilement découvrir et obtenir
-                des opportunités qui lancent sa carrière, et où les entreprises
-                trouvent les talents dont elles ont besoin pour se développer.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Nous construisons l&apos;avenir de la découverte de talents, une
-                connexion à la fois.
+                Notre vision est d’ouvrir les portes du monde professionnel à chaque jeune étudiant ou jeune diplômé, sans exception.
               </p>
             </div>
           </div>

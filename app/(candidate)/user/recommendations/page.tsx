@@ -5,7 +5,7 @@ export default async function Page() {
   const token = (await cookieStore).get("connect-student")?.value;
 
   return (
-    <div className="w-full">
+    <div className="w-full py-24">
       {/* {token && (
         <Dashboard
         // token={token}

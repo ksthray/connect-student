@@ -1,39 +1,19 @@
 "use client";
 
+import { TestimonyType } from "@/entities/types";
+import { defaultImage } from "@/services/helpers";
+import { useFetch } from "@/services/query";
 import { motion } from "framer-motion";
 import { StarIcon } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    role: "Software Engineer",
-    company: "Tech Startup",
-    content:
-      "Student Connect helped me find my dream internship. The matching algorithm is incredible - I got connected with exactly the right opportunities.",
-    avatar: "SC",
-    rating: 5,
-  },
-  {
-    name: "Marcus Johnson",
-    role: "Marketing Manager",
-    company: "Global Corp",
-    content:
-      "We posted a junior position and received 50+ applications from quality candidates in just two weeks. Best investment in recruitment.",
-    avatar: "MJ",
-    rating: 5,
-  },
-  {
-    name: "Emma Rodriguez",
-    role: "Business Student",
-    company: "University",
-    content:
-      "The platform is so user-friendly and the notifications helped me land my ideal training program. Highly recommended!",
-    avatar: "ER",
-    rating: 5,
-  },
-];
+import Image from "next/image";
 
 export default function Testimonials() {
+  const { data, isLoading } = useFetch({
+    route: "/candidate/testimonials",
+    query: "testimonials",
+  });
+
+  const testimonials: TestimonyType[] = data?.data || [];
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-6 text-center">
@@ -51,43 +31,50 @@ export default function Testimonials() {
 
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="bg-white border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
-              {/* Rating Stars */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                  />
-                ))}
-              </div>
+          {!isLoading
+            ? testimonials.map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="bg-white border border-border rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+                  {/* Rating Stars */}
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(testimonial.stars)].map((_, i) => (
+                      <StarIcon
+                        key={i}
+                        className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                      />
+                    ))}
+                  </div>
 
-              {/* Content */}
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                &quot;{testimonial.content}&quot;
-              </p>
+                  {/* Content */}
+                  <p className="text-muted-foreground leading-relaxed mb-6">
+                    &quot;{testimonial.comment}&quot;
+                  </p>
 
-              {/* Author Info */}
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full linear-premiere flex items-center justify-center shrink-0">
-                  <span className="text-white text-sm font-bold">
-                    {testimonial.avatar}
-                  </span>
+                  {/* Author Info */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 relative rounded-full overflow-hidden bg-gray-100">
+                      <Image
+                        src={
+                          testimonial.photo ? testimonial.photo : defaultImage
+                        } // Placeholder (remplacez par votre image locale)
+                        alt={testimonial.fullname}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">
+                        {testimonial.fullname}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {testimonial.post} •
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.role} • {testimonial.company}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+              ))
+            : "Chargement..."}
         </div>
       </div>
     </section>

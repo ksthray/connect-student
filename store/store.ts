@@ -7,6 +7,8 @@ interface Auth {
   admin: UserAdmin;
   isLogged: (data: UserAdmin, token: string) => void;
   isLogout: () => void;
+  isAuthenticed: boolean;
+  updateProfil: (newProfileUrl: string) => void;
 }
 
 export const useAuthStore = create<Auth>()(
@@ -21,13 +23,16 @@ export const useAuthStore = create<Auth>()(
           password: "",
           role: "ADMIN",
           createdAt: new Date(),
+          isAuthenticed: false,
         },
+        isAuthenticed: false,
         isLogged(data, token) {
           set({
             token: token,
             admin: {
               ...data,
             },
+            isAuthenticed: true,
           });
         },
         isLogout() {
@@ -41,7 +46,16 @@ export const useAuthStore = create<Auth>()(
               role: "ADMIN",
               createdAt: new Date(),
             },
+            isAuthenticed: false,
           });
+        },
+        updateProfil(newProfileUrl) {
+          set((state) => ({
+            admin: {
+              ...state.admin,
+              image: newProfileUrl,
+            },
+          }));
         },
       }),
       {

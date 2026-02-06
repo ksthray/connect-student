@@ -264,6 +264,8 @@ model Application {
   jobOfferId String
   jobOffer   JobOffer @relation(fields: [jobOfferId], references: [id])
 
+  cvUrl String
+
   coverLetter String?
   createdAt   DateTime @default(now())
 
@@ -331,9 +333,11 @@ model News {
 model Message {
   id        String   @id @default(uuid())
   fullname  String
-  email     String   @unique
-  phone     String?  @unique
+  email     String
+  phone     String?
   message   String
+  type      String
+  subject   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   order     Int      @default(0)

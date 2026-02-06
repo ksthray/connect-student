@@ -1,123 +1,93 @@
+// src/app/connexion/components/Login.tsx
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+
+// Vos schémas Zod
+import { sendOtpSchema, SendOtpInput } from "@/schemas/candidate/auth";
+
+// Composants Shadcn/UI/Custom
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
-import Image from "next/image";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import api from "@/services/api";
+import { toast } from "sonner";
+// import api from "@/services/api"; // Assurez-vous d'importer votre instance API
 
-const Login = () => {
-  const [step, setStep] = useState<"email" | "otp">("email");
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
-  const [loading, setLoading] = useState(false);
+interface LoginProps {
+  onSuccess: (email: string) => void;
+}
 
-  const handleSendCode = () => {
-    if (!email) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep("otp");
-    }, 1500);
-  };
+export const Login: React.FC<LoginProps> = ({ onSuccess }) => {
+  const loginForm = useForm<SendOtpInput>({
+    resolver: zodResolver(sendOtpSchema),
+    defaultValues: { email: "" },
+  });
 
-  const handleVerify = () => {
-    if (!otp) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  };
+  const sendOtpMutation = useMutation({
+    mutationFn: async (email: string) => {
+      // REMPLACEZ la simulation par votre appel API réel
+      const res = await api.post(`/candidate/auth/login`, { email });
+      return res.data;
+    },
+    onSuccess: (data, email) => {
+      if (data.state) {
+        onSuccess(email);
+        toast.success(data.message);
+      }
+    },
+    onError: (err) => {
+      console.error(err);
+    },
+  });
+
+  function onSubmit(values: SendOtpInput) {
+    sendOtpMutation.mutate(values.email);
+  }
+
+  const isPending = sendOtpMutation.isPending;
+
   return (
-    <div className="w-full container mx-auto h-screen flex justify-center items-center">
-      <div
-        style={{ backgroundImage: "url(/images/login.jpg)" }}
-        className="w-full bg-center bg-cover flex justify-center items-center h-[80%] rounded-2xl">
-        <Card className=" shadow-2xl">
-          <CardContent className="p-8">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">
-                {step === "email" ? "Bienvenue 👋" : "Vérification"}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                {step === "email"
-                  ? "Connecte-toi avec ton adresse e-mail pour recevoir ton code OTP"
-                  : `Un code a été envoyé à ${email}`}
-              </p>
-            </div>
-
-            {step === "email" ? (
-              <motion.div
-                key="email-step"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}>
-                <div className="mb-4">
-                  <Label htmlFor="email">Adresse e-mail</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="exemple@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-                <Button
-                  onClick={handleSendCode}
-                  disabled={loading || !email}
-                  className="w-full bg-linear-to-r from-blue-500 to-indigo-500 text-white">
-                  {loading ? (
-                    <Loader2 className="animate-spin w-4 h-4" />
-                  ) : (
-                    "Envoyer le code"
-                  )}
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="otp-step"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}>
-                <div className="mb-4">
-                  <Label htmlFor="otp">Code OTP</Label>
-                  <Input
-                    id="otp"
-                    type="text"
-                    placeholder="Entrez le code à 6 chiffres"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    maxLength={6}
-                    className="mt-1 text-center tracking-[0.3em]"
-                  />
-                </div>
-                <Button
-                  onClick={handleVerify}
-                  disabled={loading || otp.length < 6}
-                  className="w-full bg-linear-to-r from-green-500 to-emerald-500 text-white">
-                  {loading ? (
-                    <Loader2 className="animate-spin w-4 h-4" />
-                  ) : (
-                    "Vérifier le code"
-                  )}
-                </Button>
-
-                <p
-                  className="text-xs text-gray-500 text-center mt-4 cursor-pointer hover:underline"
-                  onClick={() => setStep("email")}>
-                  Modifier l&apos;adresse e-mail
-                </p>
-              </motion.div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <Form {...loginForm}>
+      <form onSubmit={loginForm.handleSubmit(onSubmit)}>
+        <FormField
+          control={loginForm.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="mb-4">
+              <FormLabel>Adresse e-mail</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="exemple@email.com"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full linear-premiere text-white">
+          {isPending ? (
+            <Loader2 className="animate-spin w-4 h-4" />
+          ) : (
+            "Continuer (Envoyer OTP)"
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 };
-
-export default Login;

@@ -39,7 +39,7 @@ export const jobCreateSchema = z.object({
 
   // Champ spécifique pour l'ADMIN (identifie pour qui l'Admin publie)
   // L'Admin doit fournir l'ID de l'entreprise cible.
-  companyId: z.string().cuid("ID de l'entreprise cible invalide."),
+  companyId: z.string().optional(),
 });
 
 export type JobCreateInput = z.infer<typeof jobCreateSchema>;
@@ -108,6 +108,14 @@ export const jobVisibilitySchema = z.object({
 });
 
 export type JobVisibilityInput = z.infer<typeof jobVisibilitySchema>;
+
+export const jobActiveSchema = z.object({
+  active: z
+    .boolean()
+    .describe("Le champ 'active' est requis et doit être un booléen."),
+});
+
+export type JobActiveInput = z.infer<typeof jobActiveSchema>;
 
 export const jobSearchSchema = z.object({
   // 1. PAGE : Accepte string (de l'URL) ou null, transforme en nombre, utilise 1 si null/vide, assure >= 1.

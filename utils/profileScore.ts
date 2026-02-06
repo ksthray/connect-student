@@ -1,94 +1,124 @@
 // Imports : Types de User et CandidateProfile générés par Prisma.
 
-// Adapter les types à votre nouveau schéma
 interface CandidateProfileData {
   user: {
-    fullname: string | null; // Renommé 'name' en 'fullname' selon le schéma
+    fullname: string | null;
     email: string;
     phone: string | null;
   };
   candidateProfile: {
-    level: string; // UserLevel
+    level: string | null; // Peut être null si non rempli
     university: string | null;
     skills: string[];
     cvUrl: string | null;
-    about: string | null; // <-- NOUVEAU CHAMP
-
-    // Relation Many-to-Many simplifiée pour le calcul :
-    sectors: Array<{ id: string }> | null; // Vérifier si au moins un secteur est connecté
+    about: string | null;
+    // Supposons que 'sectors' est un tableau d'objets ou un tableau vide
+    sectors: Array<{ id: string }> | null;
   } | null;
 }
 
-export function calculateProfileCompletion(data: CandidateProfileData): number {
+interface ProfileStatus {
+  score: number;
+  details: {
+    fullname: boolean;
+    phone: boolean;
+    about: boolean;
+    sectors: boolean;
+    skills: boolean;
+    cvUrl: boolean;
+    level: boolean;
+    university: boolean;
+  };
+}
+
+export function calculateProfileCompletion(
+  data: CandidateProfileData
+): ProfileStatus {
   let score = 0;
   const TOTAL_POINTS = 100;
 
+  // Initialisation des détails
+  const details = {
+    fullname: false,
+    phone: false,
+    about: false,
+    sectors: false,
+    skills: false,
+    cvUrl: false,
+    level: false,
+    university: false,
+  };
+
   // =========================================================
-  // PALIERS DE POINTS (Total 100)
+  // PALIERS DE POINTS
   // =========================================================
   const WEIGHTS = {
-    BASE: 20, // fullname, email
+    BASE: 20,
     PHONE: 5,
-    ABOUT: 15, // Nouveau
-    SECTORS: 15, // Ex-categoryId
+    ABOUT: 15,
+    SECTORS: 15,
     SKILLS: 15,
     CV_URL: 15,
-    LEVEL: 5, // Rempli par défaut
-    UNIVERSITY: 10, // Poids réduit
+    LEVEL: 5,
+    UNIVERSITY: 10,
   };
 
   // 1. BASE (20 points)
-  // On assume que fullname et email sont remplis à l'inscription (email est unique/requis)
   if (data.user.fullname && data.user.email) {
     score += WEIGHTS.BASE;
+    details.fullname = true;
   }
 
-  // 2. VÉRIFICATION DU PROFIL CANDIDAT
   if (!data.candidateProfile) {
-    // Si le profil n'existe pas, on retourne le score de base
-    return score;
+    return { score: Math.min(score, TOTAL_POINTS), details };
   }
 
   const profile = data.candidateProfile;
 
-  // 3. CONTACT (5 points)
+  // 2. CONTACT (5 points)
   if (data.user.phone) {
     score += WEIGHTS.PHONE;
+    details.phone = true;
   }
 
-  // 4. BIOGRAPHIE (10 points)
+  // 3. BIOGRAPHIE (15 points)
   if (profile.about && profile.about.length > 20) {
     score += WEIGHTS.ABOUT;
+    details.about = true;
   }
 
-  // 5. SECTEURS D'INTÉRÊT (15 points)
-  // Vérification de la relation Many-to-Many
+  // 4. SECTEURS D'INTÉRÊT (15 points)
   if (profile.sectors && profile.sectors.length > 0) {
     score += WEIGHTS.SECTORS;
+    details.sectors = true;
   }
 
-  // 6. COMPÉTENCES (15 points)
+  // 5. COMPÉTENCES (15 points) - Score basé sur plus de 2 compétences
   if (profile.skills && profile.skills.length > 2) {
     score += WEIGHTS.SKILLS;
+    details.skills = true;
   }
 
-  // 7. CV (15 points)
+  // 6. CV (15 points)
   if (profile.cvUrl) {
     score += WEIGHTS.CV_URL;
+    details.cvUrl = true;
   }
 
-  // 8. ÉDUCATION/NIVEAU (5 + 10 + 5 = 20 points)
-
-  // Level (5 points)
+  // 7. LEVEL (5 points)
   if (profile.level) {
-    // Devrait être toujours vrai
     score += WEIGHTS.LEVEL;
+    details.level = true;
   }
 
-  // Université (10 points)
+  // 8. UNIVERSITÉ (10 points)
   if (profile.university) {
     score += WEIGHTS.UNIVERSITY;
+    details.university = true;
   }
 
-  return Math.min(score, TOTAL_POINTS); // Ne jamais dépasser 100%
+  return {
+    score: Math.min(score, TOTAL_POINTS),
+    details: details,
+  };
 }
