@@ -76,8 +76,8 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="tel:+243854487045" className="underline">
-                +243 854 487 045
+              <Link href="tel:+243989281540" className="underline">
+                +243 989 281 540
               </Link>
             </li>
             <li>Avenue OUA, N°01, Quartier Basoko, Commune de Ngaliema,
@@ -96,7 +96,7 @@ export default function Footer() {
 
       {/* Bas du footer */}
       <div className="border-t border-gray-700 py-4 text-center text-sm text-gray-200 flex flex-col md:flex-row justify-between items-center px-6">
-        <p>© 2025 Student Connect. Tous droits réservés.</p>
+        <p>© 2026 Connect Student. Tous droits réservés.</p>
         <div className="flex gap-4 mt-2 md:mt-0">
           <Link href="/pdf/pdc.pdf" target="_blank" className="hover:text-premiere">
             Politique de confidentialité

@@ -18,17 +18,17 @@ const Faq = () => {
     {
       question: "Combien de temps faut-il pour recevoir des candidatures ?",
       answer:
-        "Dès que votre opportunité est en ligne, les candidats appariés commenceront à postuler dans les 24 à 48 heures. Notre algorithme d'IA met en relation en permanence de nouveaux candidats à mesure qu'ils rejoignent la plateforme.",
+        "Dès que votre opportunité est en ligne, les candidats appariés commenceront à postuler dans les 24 à 48 heures. Notre algorithme met en relation en permanence de nouveaux candidats à mesure qu'ils rejoignent la plateforme.",
     },
     {
-      question: "Quelle est la qualité des candidats sur Student Connect ?",
+      question: "Quelle est la qualité des candidats sur Connect Student ?",
       answer:
         "Tous les candidats sur notre plateforme ont des informations éducatives vérifiées et des profils de compétences détaillés. Notre algorithme de mise en relation garantit que vous recevez des candidatures de candidats dont les qualifications correspondent à vos exigences.",
     },
     {
       question: "Pouvons-nous communiquer directement avec les candidats ?",
       answer:
-        "Absolument ! Nous fournissons un système de messagerie intégré qui permet une communication directe avec les candidats. Vous pouvez également planifier des entretiens et suivre l'historique des communications.",
+        "Pour l'instant NON ! Mais très bientôt nous allons mettre en place un système de messagerie intégré qui permettra une communication directe avec les candidats. Vous pouvez également planifier des entretiens et suivre l'historique des communications.",
     },
     {
       question: "Y a-t-il un engagement ou un contrat ?",

@@ -73,7 +73,7 @@ const SocialNetwork = () => {
           </p>
 
           <Button className="bg-white text-primary hover:bg-blue-50 text-base px-8 h-12 rounded-lg font-semibold">
-            <Link href="https://wa.me/+243854487045" target="_blank" className="flex items-center gap-2">
+            <Link href="https://wa.me/+243989281540" target="_blank" className="flex items-center gap-2">
               Écrivez-nous sur Whatsapp
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
