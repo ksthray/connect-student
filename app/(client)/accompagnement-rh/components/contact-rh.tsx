@@ -29,8 +29,8 @@ const ContactRh = () => {
                             <Phone className="w-6 h-6" />
                         </div>
                         <h3 className="font-semibold mb-2">Téléphone</h3>
-                        <Link href={'tel:+243854487045'} className="text-premiere hover:underline">
-                            +243 854 487 045
+                        <Link href={'tel:+243989281540'} className="text-premiere hover:underline">
+                            +243 989 281 540
                         </Link>
                     </div>
 

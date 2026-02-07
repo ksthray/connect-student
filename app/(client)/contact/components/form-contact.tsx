@@ -91,7 +91,7 @@ const FormContact = () => {
     {
       name: "Équipe Connect Student",
       description: "Pour les étudiants, entreprises et centres de formation",
-      email: "contact@conntec-student.com",
+      email: "contact@connect-student.com",
       icon: "💼",
     },
   ];

@@ -5,6 +5,10 @@ import { registerSchema } from "@/schemas/candidate/auth";
 import { prisma } from "@/lib/prisma";
 import { generateOTP } from "@/utils/auth";
 import { addMinutes } from "date-fns";
+import {
+  sendAccountCreatedEmail,
+  sendOtpEmail,
+} from "@/components/emails/send-emails";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,7 +24,7 @@ export async function POST(req: NextRequest) {
           message: "Données de formulaire invalides.",
           errors: validatedData.error.flatten().fieldErrors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -38,7 +42,7 @@ export async function POST(req: NextRequest) {
           state: false,
           message: "Un compte avec cette adresse e-mail existe déjà.",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -54,7 +58,7 @@ export async function POST(req: NextRequest) {
           state: false,
           message: "Un compte avec ce numéro de téléphone existe déjà.",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -80,13 +84,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("otp:", otpCode);
-
-    // 6. Envoi de l'OTP pour vérification immédiate (comme requis par le front-end)
-    // Après la création, le front-end s'attend à passer à l'étape OTP.
-    // La route /api/auth/send-otp (ou similaire) doit être appelée *après* l'inscription
-    // pour générer et envoyer le code, et mettre à jour `otpCode` et `otpExpiresAt` pour le `newUser`.
-
+    await sendAccountCreatedEmail(email, newUser.fullname!, otpCode);
     // Si vous souhaitez que cette route retourne directement l'email pour le step OTP :
     return NextResponse.json(
       {
@@ -94,7 +92,7 @@ export async function POST(req: NextRequest) {
         message: "Inscription réussie. Veuillez vérifier votre adresse e-mail.",
         email: newUser.email,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Erreur lors de l'inscription:", error);
@@ -103,7 +101,7 @@ export async function POST(req: NextRequest) {
         state: false,
         message: "Une erreur interne du serveur s'est produite.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
