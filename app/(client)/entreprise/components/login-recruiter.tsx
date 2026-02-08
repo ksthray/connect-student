@@ -29,6 +29,8 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/store";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 // import api from "@/services/api"; // Assurez-vous d'importer votre instance API
 
 export const LoginPage = () => {
@@ -161,6 +163,14 @@ export const LoginPage = () => {
                   </form>
                 </Form>
               </motion.div>
+              <Separator className="my-4" />
+              <div className="text-center">
+                <p className="text-sm text-gray-500">
+                  Vous n'avez pas de compte ?{" "} Veuillez contacter le service
+                  commercial au <Link href="tel:+243989281540" className="underline text-black">+243 989 281 540</Link> ou par email a {" "}
+                  <Link href="mailto:contact@connect-student.com" className="underline text-black">contact@connect-student.com</Link>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>

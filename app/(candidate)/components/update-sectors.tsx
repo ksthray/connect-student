@@ -32,7 +32,7 @@ const UpdateSectors: React.FC<UpdateSectorsProps> = ({
 
   const [selectedSectors, setSelectedSectors] = useState(
     initialSelectedSectors ||
-      ([] as UpdateSectorsProps["initialSelectedSectors"])
+    ([] as UpdateSectorsProps["initialSelectedSectors"])
   );
 
   const [isSaving, setIsSaving] = useState(false);
@@ -65,6 +65,7 @@ const UpdateSectors: React.FC<UpdateSectorsProps> = ({
         }
       );
       toast.success("Secteurs mis à jour avec succès !");
+      window.location.reload();
     } catch (error: any) {
       console.error(error);
       toast.error("Erreur lors de la mise à jour des secteurs.");

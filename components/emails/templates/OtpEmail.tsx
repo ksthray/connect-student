@@ -53,7 +53,7 @@ export const OtpEmail = ({ fullname, otp }: OtpProps) => {
                             />
                         </Section>
                         <Section className="bg-white p-10 rounded-lg shadow-sm">
-                            <Text className="text-textPrimary text-lg font-semibold">Bonjour {fullname},</Text>
+                            <Text className="text-textPrimary text-lg font-semibold capitalize">Bonjour {fullname},</Text>
                             <Text className="text-textSecondary text-sm">
                                 Voici votre code OTP pour la connexion à votre compte Connect Student :
                             </Text>

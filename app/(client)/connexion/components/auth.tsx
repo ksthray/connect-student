@@ -85,11 +85,10 @@ const AuthPage = () => {
                       setActiveTab("login");
                       router.replace("/connexion");
                     }}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-                      activeTab === "login"
+                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === "login"
                         ? "bg-white shadow text-gray-800"
                         : "text-gray-500 hover:text-gray-700"
-                    }`}>
+                      }`}>
                     Se connecter
                   </button>
                   <button
@@ -97,11 +96,10 @@ const AuthPage = () => {
                       setActiveTab("account");
                       router.replace("/connexion?tab=account");
                     }}
-                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-                      activeTab === "account"
+                    className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === "account"
                         ? "bg-white shadow text-gray-800"
                         : "text-gray-500 hover:text-gray-700"
-                    }`}>
+                      }`}>
                     Créer un compte
                   </button>
                 </div>

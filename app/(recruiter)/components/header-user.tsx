@@ -28,7 +28,7 @@ export default function HeaderUser() {
           <Link href={"/"}>
             <Image
               src="/images/connect-student-logo.png"
-              alt="Student Connect"
+              alt="Connect Student"
               width={500}
               height={500}
               className="object-contain w-[100px] md:w-[120px] 2xl:w-[150px]"

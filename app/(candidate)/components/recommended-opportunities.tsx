@@ -23,8 +23,8 @@ const RecommendationCard: React.FC<{ opp: RecommendedJob }> = ({ opp }) => {
     opp.matchScore >= 90
       ? "text-green-600"
       : opp.matchScore >= 80
-      ? "text-yellow-600"
-      : "text-primary";
+        ? "text-yellow-600"
+        : "text-primary";
 
   return (
     <Link
@@ -71,19 +71,23 @@ export const SubscriptionPrompt: React.FC = () => (
       d&apos;emploi personnalisées qui correspondent parfaitement à votre
       profil.
     </p>
-    <div className="flex justify-center md:flex-row flex-col gap-2 space-x-4">
-      <Link className="md:w-max w-full" href="/pricing" passHref>
-        <Button className="md:w-max w-full">
+    {/* info */}
+    <div className="text-xs text-muted-foreground bg-gray-100 p-2 rounded-lg">
+      Cette fonctionnalité n'est pas encore disponible. Veuillez réessayer plus tard.
+    </div>
+    {/* <div className="flex justify-center md:flex-row flex-col gap-2 space-x-4">
+      <Button asChild disabled={true} className="md:w-max w-full">
+        <Link className="md:w-max w-full flex" href="/pricing" passHref>
           <DollarSign className="w-4 h-4 mr-2" />
           Voir nos plans
-        </Button>
-      </Link>
-      <Link className="md:w-max w-full" href="/checkout" passHref>
-        <Button className="md:w-max w-full" variant="secondary">
+        </Link>
+      </Button>
+      <Button asChild disabled={true} className="md:w-max w-full" variant="secondary">
+        <Link className="md:w-max w-full" href="/checkout" passHref>
           Payer l&apos;abonnement
-        </Button>
-      </Link>
-    </div>
+        </Link>
+      </Button>
+    </div> */}
   </div>
 );
 

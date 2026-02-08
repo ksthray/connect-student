@@ -55,7 +55,7 @@ export const EmailFooter = () => {
                     </Link>
                 </Column>
             </Row>
-            <Text className="mb-45 text-center text-textSecondary text-sm">
+            <Text className="mb-45 text-left text-textSecondary text-sm">
                 © {new Date().getFullYear()} Connect Student. Tous droits réservés.
                 <br />
                 Avenue OUA, N°01, Quartier Basoko, Commune de Ngaliema,

@@ -12,11 +12,15 @@ const UNLIMITED_LIMIT = 20;
 interface UseJobOpportunitiesProps {
   page: number;
   sectorIds?: string;
+  words?: string;
+  type?: string;
 }
 
 export const useJobOpportunities = ({
   page,
   sectorIds = "",
+  words = "",
+  type = "",
 }: UseJobOpportunitiesProps) => {
   // 1. Récupération du Statut via ZUSTAND
   const isAuthenticated = useAuthStore((state) => state.isAuthenticed);
@@ -42,14 +46,28 @@ export const useJobOpportunities = ({
   // Cas 3: STANDARD/PREMIUM -> limit reste UNLIMITED_LIMIT
 
   // 4. Construction de la requête
-  const route = `/candidate/jobs?page=${page}&limit=${limit}${
+  // Si on a des mots-clés ou un type, on utilise la route de recherche, sinon la route standard
+  const endpoint = words || type ? "/candidate/search" : "/candidate/jobs";
+
+  const route = `${endpoint}?page=${page}&limit=${limit}${
     sectorIds ? `&sectorIds=${sectorIds}` : ""
+  }${words ? `&words=${encodeURIComponent(words)}` : ""}${
+    type ? `&type=${encodeURIComponent(type)}` : ""
   }`;
 
   // 5. Fetch
   const { data, isLoading, isError } = useQuery({
     // La clé unique : inclut toutes les variables qui, si elles changent, doivent déclencher un re-fetch
-    queryKey: ["opportunities", page, limit, sectorIds, isAuthenticated, plan],
+    queryKey: [
+      "opportunities",
+      page,
+      limit,
+      sectorIds,
+      words,
+      type,
+      isAuthenticated,
+      plan,
+    ],
 
     // La fonction de fetch
     queryFn: async () => {

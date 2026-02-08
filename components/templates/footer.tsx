@@ -12,7 +12,7 @@ export default function Footer() {
           <div className="flex items-center mb-3">
             <Image
               src="/images/connect-student-logo.png" // change selon ton chemin de logo
-              alt="Student Connect Logo"
+              alt="Connect Student Logo"
               width={500}
               height={500}
               className="w-[150px]"

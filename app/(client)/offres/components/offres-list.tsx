@@ -102,24 +102,23 @@ export default function OffresList() {
                   {/* Message principal et incitation à l'Onboarding */}
                   <div className="grow text-center">
                     <p className="font-bold text-lg text-gray-800">
-                      Débloquez l&apos;accès illimité et la personnalisation !
+                      Débloquez l&apos;accès illimité !
                     </p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Nous avons trouvé{" "}
                       <b className="text-premiere">
                         {pagination?.total} offres
                       </b>{" "}
-                      pertinentes, mais vous n&apos;en voyez que <b>{limit}</b>.
+                      pertinentes, mais vous n&apos;en voyez que <b className="text-black">{limit}</b>.
                       <br className="hidden sm:inline" />{" "}
                       <span className="font-semibold text-primary">
-                        Créer votre
+                        Créer votre compte
                       </span>{" "}
                       ou{" "}
                       <span className="font-semibold text-primary">
                         Connectez-vous
                       </span>{" "}
-                      si cela à été déjà fait, pour des recommandations précises
-                      et accès à toutes les opportunités.
+                      pour avoir accès à toutes les opportunités.
                     </p>
                   </div>
 
@@ -127,9 +126,9 @@ export default function OffresList() {
                   <div className="flex flex-col gap-2 md:flex-row w-full justify-center">
                     {/* Bouton pour Créer (Onboarding) */}
                     <Button
-                      onClick={() => setopenOnboarding(true)}
+                      asChild
                       className="w-full md:w-auto">
-                      Commencer l&apos;aventure
+                      <Link href={"/connexion?tab=account"}>Créer mon compte</Link>
                     </Button>
 
                     {/* Bouton pour Se Connecter (si non authentifié) */}
@@ -150,18 +149,6 @@ export default function OffresList() {
                       </Button>
                     )}
                   </div>
-                </div>
-
-                {/* Message secondaire (petit message pour les plans) */}
-                <div className="mt-3 text-center">
-                  <a
-                    href="/pricing" // Lien vers votre page de plans/tarifs
-                    className="text-xs text-blue-600 hover:underline"
-                    onClick={() =>
-                      console.log("Action: Redirection vers la page des tarifs")
-                    }>
-                    Découvrir nos plans
-                  </a>
                 </div>
               </motion.div>
             )}

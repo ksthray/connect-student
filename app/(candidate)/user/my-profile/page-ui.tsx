@@ -14,6 +14,7 @@ import api from "@/services/api";
 import UpdateSectors from "../../components/update-sectors";
 import PhotoProfil from "../../components/photo-profil";
 import CompletionProfil from "../../components/completion-profil";
+import SkillsSection from "../../components/skills-section";
 
 export default function CandidateProfile({ token }: { token: string }) {
   const {
@@ -43,17 +44,18 @@ export default function CandidateProfile({ token }: { token: string }) {
       try {
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("upload_preset", "newhope");
 
-        const { data } = await axios.post(
-          "https://apiw3.faja-lobi.com/api/upload",
+        const response = await axios.post(
+          "https://api.cloudinary.com/v1_1/dgfkv4isa/image/upload",
           formData
         );
 
-        if (!data?.datas) throw new Error();
+        if (!response?.data?.secure_url) throw new Error();
 
         await api.patch(
           "/candidate/myprofil",
-          { cvUrl: data.datas },
+          { cvUrl: response.data.secure_url },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -61,6 +63,7 @@ export default function CandidateProfile({ token }: { token: string }) {
 
         toast.success("CV mis à jour", { id: toastId });
         refetch();
+        window.location.reload();
       } catch {
         toast.error("Erreur lors de l’upload", { id: toastId });
       } finally {
@@ -69,45 +72,6 @@ export default function CandidateProfile({ token }: { token: string }) {
     },
     [token, refetch]
   );
-
-  /* ---------------- SKILLS ---------------- */
-  const [skills, setSkills] = useState<string[]>([]);
-  const [newSkill, setNewSkill] = useState("");
-
-  useEffect(() => {
-    if (myProfile?.candidateProfile?.skills) {
-      setSkills(myProfile.candidateProfile.skills);
-    }
-  }, [myProfile]);
-
-  const updateSkills = async (updatedSkills: string[]) => {
-    setSkills(updatedSkills);
-
-    try {
-      await api.patch(
-        "/candidate/myprofil",
-        { skills: updatedSkills },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success("Compétences mises à jour");
-    } catch {
-      toast.error("Erreur lors de la mise à jour des compétences");
-    }
-  };
-
-  const addSkill = () => {
-    if (!newSkill.trim()) return;
-    if (skills.includes(newSkill)) return;
-
-    updateSkills([...skills, newSkill]);
-    setNewSkill("");
-  };
-
-  const removeSkill = (skill: string) => {
-    updateSkills(skills.filter((s) => s !== skill));
-  };
-
-  console.log(myProfile);
 
   return (
     <div className="space-y-8 px-6">
@@ -162,43 +126,16 @@ export default function CandidateProfile({ token }: { token: string }) {
       </div>
 
       {/* ================= SKILLS ================= */}
-      <div className="bg-white rounded-xl border p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Award className="w-5 h-5" />
-          <h2 className="text-xl font-bold">Compétences</h2>
-        </div>
-
-        <div className="flex gap-2 mb-4">
-          <Input
-            placeholder="Nouvelle compétence"
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-          />
-          <Button onClick={addSkill}>Ajouter</Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {skills.map((skill) => (
-            <div
-              key={skill}
-              className="flex items-center justify-between p-3 border rounded-lg">
-              <span>{skill}</span>
-              <button
-                onClick={() => removeSkill(skill)}
-                className="text-red-500">
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      {!isLoading && (
+        <SkillsSection initialSkills={myProfile.candidateProfile.skills || []} token={token} />
+      )}
       {/* ================= SECTORS ================= */}
 
       {!isLoading && (
         <div className="bg-white rounded-xl border p-6">
           <div className="flex items-center gap-2 mb-4">
             <Users2 className="w-5 h-5" />
-            <h2 className="text-xl font-bold">Compétences</h2>
+            <h2 className="text-xl font-bold">Centres d'intérêts</h2>
           </div>
           <UpdateSectors
             token={token}

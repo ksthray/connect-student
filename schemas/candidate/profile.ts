@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const updateCandidateProfileSchema = z.object({
   fullname: z.string().min(3).optional(),
+  phone: z.string().optional(),
   email: z.string().email().optional(),
   image: z.string().optional(),
 

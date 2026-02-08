@@ -106,9 +106,8 @@ export default function Dashboard({ token }: { token: string }) {
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <div
-                  className={`flex items-center gap-1 text-sm font-semibold ${
-                    kpi.isPositive ? "text-green-600" : "text-red-600"
-                  }`}>
+                  className={`flex items-center gap-1 text-sm font-semibold ${kpi.isPositive ? "text-green-600" : "text-red-600"
+                    }`}>
                   {kpi.change}
                   <ChangeIcon className="w-4 h-4" />
                 </div>
@@ -144,7 +143,7 @@ export default function Dashboard({ token }: { token: string }) {
 
           <div className="space-y-4">
             {!isLoading ? (
-              recentActivity.map((activity, idx) => (
+              recentActivity.slice(0, 5).map((activity, idx) => (
                 <div
                   key={idx}
                   className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors">
@@ -175,23 +174,22 @@ export default function Dashboard({ token }: { token: string }) {
                     </p>
                   </div>
                   <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      activity.type === "application"
+                    className={`px-2 py-1 text-xs font-semibold rounded-full ${activity.type === "application"
                         ? "bg-blue-100 text-blue-700"
                         : activity.type === "posting"
-                        ? "bg-green-100 text-green-700"
-                        : activity.type === "profile"
-                        ? "bg-purple-100 text-purple-700"
-                        : "bg-orange-100 text-orange-700"
-                    }`}>
+                          ? "bg-green-100 text-green-700"
+                          : activity.type === "profile"
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-orange-100 text-orange-700"
+                      }`}>
                     {/* Traduction du type d'activité */}
                     {activity.type === "application"
                       ? "candidature"
                       : activity.type === "posting"
-                      ? "publication"
-                      : activity.type === "profile"
-                      ? "profil"
-                      : "sauvegarde"}
+                        ? "publication"
+                        : activity.type === "profile"
+                          ? "profil"
+                          : "sauvegarde"}
                   </span>
                 </div>
               ))

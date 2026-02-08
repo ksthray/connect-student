@@ -12,6 +12,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import ShareButtonForSlug from "../components/share-bouton";
 import ButtonApply from "../components/button-apply";
+import ViewCounter from "../components/view-counter";
 
 const getOffer = async (slug: string) => {
   try {
@@ -93,6 +94,7 @@ export default async function Page({
 
   return (
     <div className="w-full">
+      <ViewCounter jobSlug={offer.slug} />
       {/* Cover Image */}
       <div className="container mx-auto px-6 pt-28">
         <div className="bg-white h-96 overflow-hidden">

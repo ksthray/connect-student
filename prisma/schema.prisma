@@ -259,7 +259,7 @@ model Application {
   status ApplicationStatus @default(PENDING)
 
   candidateId String
-  candidate   CandidateProfile @relation(fields: [candidateId], references: [id])
+  candidate   CandidateProfile @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
   jobOfferId String
   jobOffer   JobOffer @relation(fields: [jobOfferId], references: [id])
@@ -275,7 +275,7 @@ model Application {
 model Transaction {
   id          String           @id @default(cuid())
   userId      String
-  user        User             @relation(fields: [userId], references: [id])
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount      Float
   currency    String           @default("USD")
   method      PaymentMethod
@@ -288,7 +288,7 @@ model Transaction {
 model TransactionRequest {
   id          String                   @id @default(cuid())
   userId      String
-  user        User                     @relation(fields: [userId], references: [id])
+  user        User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount      Float
   currency    String                   @default("USD")
   method      PaymentMethod

@@ -16,7 +16,7 @@ type ApplicationConfirmationProps = {
     candidateName: string;
     jobTitle: string;
     companyName: string;
-    applicationId?: string;
+    coverJob?: string;
     trackUrl?: string;
 };
 
@@ -24,7 +24,7 @@ export const ApplicationConfirmationEmail = ({
     candidateName,
     jobTitle,
     companyName,
-    trackUrl = "#",
+    coverJob,
 }: ApplicationConfirmationProps) => {
     return (
         <Html>
@@ -56,7 +56,7 @@ export const ApplicationConfirmationEmail = ({
                             />
                         </Section>
                         <Section className="bg-white p-10 rounded-lg shadow-sm">
-                            <Text className="text-textPrimary text-lg font-semibold">Félicitations {candidateName},</Text>
+                            <Text className="text-textPrimary text-lg font-semibold capitalize">Félicitations {candidateName},</Text>
                             <Text className="text-textSecondary text-sm mb-6">
                                 Votre candidature pour le poste de <span className="font-semibold text-brand">{jobTitle}</span> chez <span className="font-semibold">{companyName}</span> a bien été transmise.
                             </Text>
@@ -66,12 +66,24 @@ export const ApplicationConfirmationEmail = ({
                                     L'entreprise examinera votre profil et vous contactera directement si votre candidature est retenue pour la suite du processus.
                                 </Text>
                             </Section>
+                            {/* cover job */}
+                            {coverJob && (
+                                <Section className="bg-offwhite p-6 rounded-md mb-8">
+                                    <Img
+                                        src={coverJob}
+                                        width="250"
+                                        height="auto"
+                                        alt={jobTitle}
+                                        className="mx-auto my-10"
+                                    />
+                                </Section>
+                            )}
                             <Section className="text-center mb-6">
                                 <Button
                                     className="bg-brand text-white px-6 py-3 rounded-md font-semibold text-sm no-underline"
-                                    href={trackUrl}
+                                    href={'https://connect-student.com/connexion'}
                                 >
-                                    Suivre mes candidatures
+                                    Connectez-vous à votre compte afin de suivre votre candidature
                                 </Button>
                             </Section>
                             <Text className="text-textSecondary text-sm text-center">

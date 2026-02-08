@@ -8,7 +8,7 @@ import Testimonials from "@/components/home/testimonials";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Accueil - Connect Student",
+  title: "Accueil",
 };
 
 export default function Home() {

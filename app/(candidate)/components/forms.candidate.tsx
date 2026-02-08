@@ -45,6 +45,19 @@ import { toast } from "sonner";
 
 export const LEVELS = ["STUDENT", "GRADUATE", "PROFESSIONAL"] as const;
 
+function nameLevel(level: string) {
+  switch (level) {
+    case "STUDENT":
+      return "Etudiant";
+    case "GRADUATE":
+      return "Diplômé";
+    case "PROFESSIONAL":
+      return "Professionnel";
+    default:
+      return "";
+  }
+}
+
 const candidateSchema = z.object({
   fullname: z.string().min(6, "Insérez le nom complet"),
   email: z.string().email("Adresse email invalide"),
@@ -86,7 +99,20 @@ const FormsCandidate = ({
 
   const form = useForm<CandidateFormValues>({
     resolver: zodResolver(candidateSchema),
-    defaultValues: {},
+    defaultValues: {
+      fullname: myProfile.fullname ?? "",
+      email: myProfile.email ?? "",
+      phone: myProfile.phone ?? undefined,
+      level: (myProfile.candidateProfile?.level as any) || "STUDENT",
+      university: myProfile.candidateProfile?.university ?? undefined,
+      city: myProfile.candidateProfile?.city ?? undefined,
+      commune: myProfile.candidateProfile?.commune ?? undefined,
+      address: myProfile.candidateProfile?.address ?? undefined,
+      birthday: myProfile.candidateProfile?.birthday
+        ? new Date(myProfile.candidateProfile.birthday)
+        : undefined,
+      about: myProfile.candidateProfile?.about ?? "",
+    },
   });
 
   const selectedLevel = useWatch({
@@ -103,7 +129,7 @@ const FormsCandidate = ({
       fullname: myProfile.fullname ?? "",
       email: myProfile.email ?? "",
       phone: myProfile.phone ?? undefined,
-      level: myProfile.candidateProfile?.level ?? "STUDENT",
+      level: (myProfile.candidateProfile?.level as any) || "STUDENT",
       university: myProfile.candidateProfile?.university ?? undefined,
 
       city: myProfile.candidateProfile?.city ?? undefined,
@@ -128,6 +154,7 @@ const FormsCandidate = ({
       if (res.data.state) {
         toast.success(res.data.message);
         queryClient.invalidateQueries({ queryKey: ["me"] });
+        window.location.reload();
       }
     },
     onError: (err: ErrorAxiosType) => {
@@ -223,14 +250,14 @@ const FormsCandidate = ({
                 <FormLabel>Niveau</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Sélectionner" />
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sélectionner ou modifier" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="w-full">
                     {LEVELS.map((level) => (
                       <SelectItem key={level} value={level}>
-                        {level}
+                        {nameLevel(level)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -241,7 +268,7 @@ const FormsCandidate = ({
           />
 
           {/* UNIVERSITY – ONLY FOR STUDENT */}
-          {selectedLevel === "STUDENT" && (
+          {myProfile.candidateProfile?.level === "STUDENT" && (
             <FormField
               control={form.control}
               name="university"
@@ -264,7 +291,7 @@ const FormsCandidate = ({
               <FormItem>
                 <FormLabel>À propos</FormLabel>
                 <FormControl>
-                  <Textarea rows={4} {...field} />
+                  <Textarea rows={4} {...field} placeholder="Parlez de vous..." />
                 </FormControl>
                 <FormMessage />
               </FormItem>

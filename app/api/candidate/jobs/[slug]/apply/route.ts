@@ -3,6 +3,7 @@
 import { userAuthMiddleware } from "@/lib/userAuthMiddleware";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { sendJobApplicationEmail } from "@/components/emails/send-emails";
 
 /**
  * Endpoint POST pour soumettre une candidature à une offre spécifique.
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         state: false,
         message: "Slug manquant dans la requête.",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         state: false,
         message: "L'URL du CV est manquante. Veuillez soumettre un CV.",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         message:
           "Accès refusé. Vous devez être connecté en tant que Candidat pour postuler.",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -65,6 +66,8 @@ export async function POST(req: NextRequest, { params }: Params) {
       // INCLUSION CORRIGÉE pour atteindre applicationLimit
       user: {
         select: {
+          fullname: true,
+          email: true,
           subscription: {
             select: {
               tier: {
@@ -86,7 +89,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         message:
           "Profil Candidat introuvable. Veuillez compléter votre profil.",
       },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -101,6 +104,9 @@ export async function POST(req: NextRequest, { params }: Params) {
     },
     select: {
       id: true,
+      title: true,
+      company: true,
+      coverImage: true,
     },
   });
 
@@ -110,7 +116,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         state: false,
         message: "Offre d'emploi non trouvée.",
       },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -128,7 +134,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     if (existingApplication) {
       return NextResponse.json(
         { state: false, message: "Vous avez déjà postulé à cette offre." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -142,25 +148,33 @@ export async function POST(req: NextRequest, { params }: Params) {
       },
     });
 
+    await sendJobApplicationEmail(
+      candidateProfile?.user?.email || "",
+      candidateProfile?.user?.fullname || "",
+      jobOffer.title,
+      jobOffer.company.companyName,
+      jobOffer.coverImage || "",
+    );
+
     return NextResponse.json(
       {
         state: true,
         message: "Candidature soumise avec succès !",
         data: application,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: any) {
     if (error.code === "P2002") {
       return NextResponse.json(
         { state: false, message: "Vous avez déjà postulé à cette offre." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     console.error(
       `Erreur lors de la candidature à l'offre ${jobOffer.id}:`,
-      error
+      error,
     );
     return NextResponse.json(
       {
@@ -168,7 +182,7 @@ export async function POST(req: NextRequest, { params }: Params) {
         message:
           "Erreur interne du serveur lors de la soumission de la candidature.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

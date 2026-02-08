@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import NextTopLoader from "nextjs-toploader";
 import ReactQueryProvider from "@/provider/react-query.provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Bienvenue à Connect Student",
+    template: "%s",
     default: "Accueil - Bienvenue à Connect Student",
   },
   description:
@@ -41,23 +42,25 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ReactQueryProvider>
-          <NextTopLoader
-            color="hsl(244.92, 98.39%, 24.31%)"
-            initialPosition={0.08}
-            crawlSpeed={200}
-            height={3}
-            crawl={true}
-            showSpinner={false}
-            easing="ease"
-            speed={200}
-            shadow="0 0 10px hsl(244.92, 98.39%, 24.31%),0 0 5px hsl(238.11, 75.15%, 33.14%)"
-            zIndex={1600}
-            showAtBottom={false}
-          />
-          <Toaster richColors />
-          {children}
-        </ReactQueryProvider>
+        <NuqsAdapter>
+          <ReactQueryProvider>
+            <NextTopLoader
+              color="hsl(244.92, 98.39%, 24.31%)"
+              initialPosition={0.08}
+              crawlSpeed={200}
+              height={3}
+              crawl={true}
+              showSpinner={false}
+              easing="ease"
+              speed={200}
+              shadow="0 0 10px hsl(244.92, 98.39%, 24.31%),0 0 5px hsl(238.11, 75.15%, 33.14%)"
+              zIndex={1600}
+              showAtBottom={false}
+            />
+            <Toaster richColors />
+            {children}
+          </ReactQueryProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

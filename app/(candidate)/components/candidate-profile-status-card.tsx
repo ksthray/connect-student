@@ -11,7 +11,7 @@ import { useAuthStore } from "@/store/store";
 
 // Fonction utilitaire pour extraire le nom du fichier du CV
 const getCvFileName = (url: string | null): string => {
-  if (!url) return "Aucun CV téléchargé";
+  if (!url) return "Nom du CV introuvable";
   try {
     const parts = url.split("/");
     return parts[parts.length - 1].length > 30
@@ -73,7 +73,7 @@ export const CandidateProfileStatusCard: React.FC = () => {
             <span className="text-sm font-medium text-foreground">
               Profil à finalisé avec ses informations
             </span>
-            <span className="text-sm font-bold text-secondary">{score}%</span>
+            <span className="text-sm font-bold text-premiere">{score}%</span>
           </div>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
@@ -94,11 +94,10 @@ export const CandidateProfileStatusCard: React.FC = () => {
             </span>
           </div>
           <p
-            className={`text-xs ${
-              details.cvUrl
-                ? "text-muted-foreground"
-                : "text-red-500 font-semibold"
-            }`}>
+            className={`text-xs ${details.cvUrl
+              ? "text-muted-foreground"
+              : "text-red-500 font-semibold"
+              }`}>
             {cvFileName}
           </p>
         </div>
@@ -133,6 +132,17 @@ export const CandidateProfileStatusCard: React.FC = () => {
               {getStatusIcon(details.sectors)}
               Secteurs d&apos;intérêt (
               {details.sectors ? "Définis" : "Manquants"})
+            </li>
+
+            {/* universty */}
+            <li className="flex items-center">
+              {getStatusIcon(details.university)}
+              {details.university ? "Université complétée" : "Université manquante"}
+            </li>
+            {/* phone number */}
+            <li className="flex items-center">
+              {getStatusIcon(details.phone)}
+              {details.phone ? "Numéro de téléphone complété" : "Numéro de téléphone manquant"}
             </li>
           </ul>
         </div>

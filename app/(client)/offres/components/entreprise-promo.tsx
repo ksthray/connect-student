@@ -16,7 +16,7 @@ export default function EntreprisePromo() {
           Entreprises & Centres de formation :
           <span className="text-blue-500">
             {" "}
-            rejoignez le réseau Student Connect
+            rejoignez le réseau Connect Student
           </span>
         </motion.h2>
 
