@@ -47,7 +47,7 @@ export const ContactConfirmationEmail = ({ fullname, messageSummary }: ContactCo
                             />
                         </Section>
                         <Section className="bg-white p-10 rounded-lg shadow-sm">
-                            <Text className="text-textPrimary text-lg font-semibold">Bonjour {fullname},</Text>
+                            <Text className="text-textPrimary text-lg font-semibold capitalize">Bonjour {fullname},</Text>
                             <Text className="text-textSecondary text-sm mb-6">
                                 Merci de nous avoir contactés. Nous avons bien reçu votre message.
                             </Text>

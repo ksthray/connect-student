@@ -15,7 +15,7 @@ export async function PATCH(req: NextRequest) {
           state: false,
           message: "Accès refusé. Non authentifié ou rôle incorrect.",
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -34,11 +34,11 @@ export async function PATCH(req: NextRequest) {
           message: "Validation error",
           errors: parsed.error.flatten().fieldErrors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const { fullname, email, skills, image, sectors, ...candidateData } =
+    const { fullname, email, phone, skills, image, sectors, ...candidateData } =
       parsed.data;
 
     // 🔁 Transaction pour cohérence
@@ -50,6 +50,7 @@ export async function PATCH(req: NextRequest) {
           data: {
             ...(fullname && { fullname }),
             ...(email && { email }),
+            ...(phone && { phone }),
             ...(image && { image }),
           },
         });
@@ -98,7 +99,7 @@ export async function GET(request: NextRequest) {
         state: false,
         message: "Accès refusé. Non authentifié ou rôle incorrect.",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -149,7 +150,7 @@ export async function GET(request: NextRequest) {
         state: false,
         message: "Erreur interne lors de la récupération des données.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

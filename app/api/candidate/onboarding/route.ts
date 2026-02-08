@@ -3,14 +3,7 @@
 import { NextResponse } from "next/server";
 import { candidateRegisterSchema } from "@/schemas/candidate/register";
 import { prisma } from "@/lib/prisma";
-
-// const sendVerificationEmail = (email: string, token: string) => {
-//   const verificationUrl = `${process.env.NEXT_PUBLIC_API}/verify?token=${token}`;
-//   console.log(
-//     `[EMAIL SIMULÉ] Lien de vérification pour ${email}: ${verificationUrl}`
-//   );
-//   // Ici, vous intégreriez votre service d'envoi d'emails (SendGrid, Postmark, etc.)
-// };
+import { sendAccountCreatedEmail } from "@/components/emails/send-emails";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -25,9 +18,11 @@ export async function POST(request: Request) {
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
+      // Idempotent: si l'utilisateur existe déjà, on renvoie une réponse positive
+      // pour ne pas bloquer le flux (ex: "Connexion réussie" implicite ou "Compte déjà existant")
       return NextResponse.json(
-        { state: false, error: "Un compte avec cet email existe déjà." },
-        { status: 409 } // 409 Conflict
+        { state: true, message: "Compte existant, connexion en cours..." },
+        { status: 200 },
       );
     }
 
@@ -51,14 +46,18 @@ export async function POST(request: Request) {
         email: true,
         role: true,
       },
+      // Pas d'OTP, le compte est créé directement (emailVerified: false par défaut, à voir selon règles métier)
     });
+
+    // Envoi de l'email de confirmation de création de compte (SANS OTP)
+    await sendAccountCreatedEmail(email, fullname || "");
 
     return NextResponse.json({ state: true, data: newUser }, { status: 201 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
       { error: "Erreur interne du serveur lors de la création de l'etudiant." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

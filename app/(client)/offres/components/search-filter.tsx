@@ -1,13 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Briefcase, Clock, GraduationCap, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import { useQueryState } from "nuqs";
+
 export default function SearchFilter() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [words] = useQueryState("words");
+  const [searchQuery, setSearchQuery] = useState(words || "");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/recherche?words=${encodeURIComponent(searchQuery)}`);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -24,71 +34,20 @@ export default function SearchFilter() {
             formations sélectionnées spécialement pour vous. Trouvez le poste
             qui correspond à vos compétences et à vos objectifs de carrière.
           </p>
-          <Button className="mt-4 w-max mx-auto">
-            <Search size={24} /> Effectuer une recherche{" "}
-          </Button>
-        </div>
-      </section>
-
-      {/* Search and Filter Section */}
-      {/* <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-white border-b border-border sticky top-20 z-40">
-        <div className="max-w-6xl mx-auto space-y-6">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <div className="mt-4 flex flex-col md:flex-row items-center gap-3 w-full max-w-xl mx-auto">
             <Input
-              placeholder="Search by job title, company, or location..."
+              placeholder="Rechercher un emploi, un stage..."
+              className="bg-white h-12"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 text-base border-2 rounded-lg focus:border-secondary"
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Button
-              onClick={() => setActiveTab("all")}
-              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                activeTab === "all"
-                  ? "linear-premiere text-white"
-                  : "bg-muted text-foreground hover:bg-muted/80"
-              }`}>
-              All Opportunities
+            <Button className="w-full md:w-auto h-12" onClick={handleSearch}>
+              <Search size={20} className="mr-2" /> Rechercher
             </Button>
-            <button
-              onClick={() => setActiveTab("job")}
-              className={`px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                activeTab === "job"
-                  ? "bg-linear-to-r from-primary to-secondary text-white"
-                  : "bg-muted text-foreground hover:bg-muted/80"
-              }`}>
-              <Briefcase className="w-4 h-4" />
-              Jobs
-            </button>
-            <button
-              onClick={() => setActiveTab("internship")}
-              className={`px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                activeTab === "internship"
-                  ? "bg-linear-to-r from-primary to-secondary text-white"
-                  : "bg-muted text-foreground hover:bg-muted/80"
-              }`}>
-              <GraduationCap className="w-4 h-4" />
-              Internships
-            </button>
-            <button
-              onClick={() => setActiveTab("training")}
-              className={`px-6 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                activeTab === "training"
-                  ? "bg-linear-to-r from-primary to-secondary text-white"
-                  : "bg-muted text-foreground hover:bg-muted/80"
-              }`}>
-              <Clock className="w-4 h-4" />
-              Training
-            </button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Showing {"10"} of {"78"} opportunities
-          </p>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

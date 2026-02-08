@@ -38,7 +38,7 @@ const Valeurs = () => {
           Nos Valeurs Fondamentales
         </h2>
         <p className="text-center text-muted-foreground text-lg mb-16 max-w-2xl mx-auto">
-          Ces principes guident tout ce que nous faisons chez Student Connect.
+          Ces principes guident tout ce que nous faisons chez Connect Student.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">

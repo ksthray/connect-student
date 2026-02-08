@@ -1,3 +1,4 @@
+import { sendNewsletterEmail } from "@/components/emails/send-emails";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -8,7 +9,7 @@ export async function POST(req: Request) {
     if (!email) {
       return NextResponse.json(
         { message: "L'adresse e-mail est requis.", state: false },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
     if (isExisting) {
       return NextResponse.json(
         { message: "Cette adresse e-mail est déjà inscrite.", state: false },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +30,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // await sendNewsletterConfirmationEmail({ to: email, email });
+    await sendNewsletterEmail(email, email);
 
     return NextResponse.json(
       {
@@ -37,13 +38,13 @@ export async function POST(req: Request) {
         data: subscription,
         state: true,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[NEWSLETTER_CREATE]", error);
     return NextResponse.json(
       { message: "Erreur lors de l'ajout au newsletter'.", state: false },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

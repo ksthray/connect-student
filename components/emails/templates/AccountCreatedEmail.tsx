@@ -49,7 +49,7 @@ export const AccountCreatedEmail = ({ fullname, otp }: AccountCreatedProps) => {
                             />
                         </Section>
                         <Section className="bg-white p-10 rounded-lg shadow-sm">
-                            <Text className="text-textPrimary text-lg font-semibold">Bonjour {fullname},</Text>
+                            <Text className="text-textPrimary text-lg font-semibold capitalize">Bonjour {fullname},</Text>
                             <Text className="text-textSecondary text-sm mb-6">
                                 Bienvenue sur Connect Student ! Nous sommes ravis de vous compter parmi nous.
                                 Votre compte a été créé avec succès.

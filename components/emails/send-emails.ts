@@ -5,6 +5,8 @@ import { render } from "@react-email/components";
 import { OtpEmail } from "./templates/OtpEmail";
 import NewsletterEmail from "./templates/NewsletterEmail";
 import AccountCreatedEmail from "./templates/AccountCreatedEmail";
+import ContactConfirmationEmail from "./templates/ContactConfirmationEmail";
+import ApplicationConfirmationEmail from "./templates/ApplicationConfirmationEmail";
 
 type SenderType = "default" | "confirmation" | "payment" | "otp";
 
@@ -102,6 +104,7 @@ export async function sendEmail({
   });
 }
 
+// send opt
 export async function sendOtpEmail(to: string, fullname: string, otp: string) {
   const emailHtml = await render(OtpEmail({ fullname, otp }) as ReactElement);
 
@@ -113,6 +116,7 @@ export async function sendOtpEmail(to: string, fullname: string, otp: string) {
   });
 }
 
+// send confirm subscription newsletter
 export async function sendNewsletterEmail(to: string, email: string) {
   const emailHtml = await render(NewsletterEmail({ email }) as ReactElement);
 
@@ -124,6 +128,7 @@ export async function sendNewsletterEmail(to: string, email: string) {
   });
 }
 
+// send confirm create account
 export async function sendAccountCreatedEmail(
   to: string,
   fullname: string,
@@ -136,6 +141,49 @@ export async function sendAccountCreatedEmail(
   await sendEmail({
     to,
     subject: "Confirmation de création de compte",
+    html: emailHtml,
+    sender: "confirmation",
+  });
+}
+
+// send confirm contact message
+export async function sendContactConfirmationEmail(
+  to: string,
+  fullname: string,
+  messageSummary?: string,
+) {
+  const emailHtml = await render(
+    ContactConfirmationEmail({ fullname, messageSummary }) as ReactElement,
+  );
+
+  await sendEmail({
+    to,
+    subject: "Confirmation de votre message",
+    html: emailHtml,
+    sender: "confirmation",
+  });
+}
+
+// send confirm application job
+export async function sendJobApplicationEmail(
+  to: string,
+  candidateName: string,
+  jobTitle: string,
+  companyName: string,
+  coverJob: string,
+) {
+  const emailHtml = await render(
+    ApplicationConfirmationEmail({
+      candidateName,
+      jobTitle,
+      companyName,
+      coverJob,
+    }) as ReactElement,
+  );
+
+  await sendEmail({
+    to,
+    subject: "Confirmation de votre candidature",
     html: emailHtml,
     sender: "confirmation",
   });

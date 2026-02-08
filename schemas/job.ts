@@ -144,6 +144,16 @@ export const jobSearchSchema = z.object({
   // 3. SECTOR IDS : Accepte string ou null, utilise une chaîne vide par défaut si null.
   // La route s'occupe de splitter la chaîne vide ('') sans erreur.
   sectorIds: z.string().nullable().default(""),
+
+  // 4. KEYS (Mots-clés pour recherche intelligente)
+  words: z.string().optional().or(z.null()),
+
+  // 5. TYPE (Filtre explicite)
+  type: z
+    .nativeEnum(JobType)
+    .optional()
+    .or(z.literal("").transform(() => undefined))
+    .or(z.null()),
 });
 
 // Type de sortie (facultatif mais recommandé)

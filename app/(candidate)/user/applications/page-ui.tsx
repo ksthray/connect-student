@@ -3,6 +3,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Briefcase,
   Clock,
   CheckCircle,
@@ -31,12 +38,12 @@ type ApplicationType = {
       location: string;
       deadline: Date;
       type:
-        | "INTERNSHIP"
-        | "FULL_TIME"
-        | "PART_TIME"
-        | "EVENT"
-        | "CONFERENCE"
-        | "TRAINING";
+      | "INTERNSHIP"
+      | "FULL_TIME"
+      | "PART_TIME"
+      | "EVENT"
+      | "CONFERENCE"
+      | "TRAINING";
       company: {
         companyName: string;
       };
@@ -148,11 +155,11 @@ export default function CandidateApplications({ token }: { token: string }) {
           </p>
         </div>
         <div className="bg-white rounded-lg border border-border p-4">
-          <p className="text-xs font-medium text-green-600 mb-2">Accepted</p>
+          <p className="text-xs font-medium text-green-600 mb-2">Acceptée</p>
           <p className="text-2xl font-bold text-foreground">{stats.accepted}</p>
         </div>
         <div className="bg-white rounded-lg border border-border p-4">
-          <p className="text-xs font-medium text-red-600 mb-2">Rejected</p>
+          <p className="text-xs font-medium text-red-600 mb-2">Refusée</p>
           <p className="text-2xl font-bold text-foreground">{stats.rejected}</p>
         </div>
       </div>
@@ -163,36 +170,40 @@ export default function CandidateApplications({ token }: { token: string }) {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Chercher par ville or compagnie..."
+              placeholder="Chercher par titre ou compagnie..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 border-border"
             />
           </div>
 
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/30 bg-white">
-            <option value="all">Tous les types</option>
-            <option value="INTERNSHIP">Stages</option>
-            <option value="FULL_TIME">Emploi - Temps plein</option>
-            <option value="PART_TIME">Emploi - Temps partiel</option>
-            <option value="EVENT">Événement</option>
-            <option value="CONFERENCE">Conférence</option>
-            <option value="TRAINING">Formation</option>
-          </select>
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-full bg-white border-border">
+              <SelectValue placeholder="Tous les types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les types</SelectItem>
+              <SelectItem value="INTERNSHIP">Stages</SelectItem>
+              <SelectItem value="FULL_TIME">Emploi - Temps plein</SelectItem>
+              <SelectItem value="PART_TIME">Emploi - Temps partiel</SelectItem>
+              <SelectItem value="EVENT">Événement</SelectItem>
+              <SelectItem value="CONFERENCE">Conférence</SelectItem>
+              <SelectItem value="TRAINING">Formation</SelectItem>
+            </SelectContent>
+          </Select>
 
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-border rounded-lg focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/30 bg-white">
-            <option value="all">Tout les status</option>
-            <option value="pending">En entante</option>
-            <option value="reviewing">Vue</option>
-            <option value="accepted">Acceptée</option>
-            <option value="rejected">Rejetée</option>
-          </select>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-full bg-white border-border">
+              <SelectValue placeholder="Tous les status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les status</SelectItem>
+              <SelectItem value="PENDING">En attente</SelectItem>
+              <SelectItem value="REVIEWING">Vue</SelectItem>
+              <SelectItem value="ACCEPTED">Acceptée</SelectItem>
+              <SelectItem value="REJECTED">Rejetée</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -273,7 +284,7 @@ export default function CandidateApplications({ token }: { token: string }) {
                   asChild
                   variant="outline"
                   className="border-current text-current">
-                  <Link href={`https://wa.me/+243854487045`}>
+                  <Link href={`https://wa.me/+243989281540`}>
                     <svg
                       width="24px"
                       height="24px"
@@ -289,7 +300,7 @@ export default function CandidateApplications({ token }: { token: string }) {
                 <Button
                   variant="outline"
                   className="border-red-200 text-red-600 hover:bg-red-50 md:ml-auto"
-                  onClick={() => {}}>
+                  onClick={() => { }}>
                   <Trash2 className="w-4 h-4 mr-2" />
                   Retirer
                 </Button>

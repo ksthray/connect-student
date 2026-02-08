@@ -5,6 +5,7 @@ import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function EnterpriseSection() {
   const partners = [
@@ -71,7 +72,7 @@ export default function EnterpriseSection() {
           </h2>
           <p className="text-gray-600 mb-6">
             Publiez vos offres d’emploi, de stage et de formation directement
-            sur Student Connect. Touchez des milliers d’étudiants et de jeunes
+            sur Connect Student. Touchez des milliers d’étudiants et de jeunes
             diplômés motivés, activement à la recherche d’opportunités.
           </p>
 
@@ -98,7 +99,7 @@ export default function EnterpriseSection() {
           </ul>
 
           <Button className="bg-premiere hover:bg-premiere-foreground text-white rounded-md px-6 py-5 text-base">
-            Publier une offre
+            <Link href={"/entreprise"}>Publier une offre</Link>
           </Button>
         </motion.div>
       </div>

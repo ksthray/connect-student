@@ -3,7 +3,10 @@
 
 import { ApplyModal } from "@/components/apply-modal";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MyProfilType } from "@/entities/types";
 import { getActionText } from "@/services/helpers";
+import { useFetch } from "@/services/query";
 import { useAuthStore } from "@/store/store";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -20,8 +23,24 @@ const ButtonApply: React.FC<ApplyButtonProps> = ({
   offerSlug,
   offerTitle,
 }) => {
+  const token = useAuthStore((s) => s.token);
+  const {
+    data: candidateData,
+    isLoading,
+  } = useFetch({
+    route: "/candidate/myprofil",
+    query: "me",
+    params: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+    enabled: !!token,
+  });
+
+  const myProfile: MyProfilType = candidateData?.data;
+
   const searchParams = useSearchParams();
-  const { admin, isAuthenticed } = useAuthStore((s) => s);
   const [openApply, setopenApply] = useState(false);
 
   useEffect(() => {
@@ -45,22 +64,30 @@ const ButtonApply: React.FC<ApplyButtonProps> = ({
     <>
       <Button
         onClick={handleClick}
-        className="linear-premiere text-white font-semibold h-12 px-8">
+        className="linear-premiere hover:bg-premiere cursor-pointer text-white font-semibold h-12 px-8">
         {getActionText(offerType)}
       </Button>
-      <ApplyModal
-        open={openApply}
-        setopen={setopenApply}
-        jobSlug={offerSlug}
-        jobTitle={offerTitle}
-        userProfile={{
-          fullname: admin.fullname,
-          email: admin.email,
-          phone: admin.phone as string,
-          cvUrl: "",
-        }}
-        isAuthenticated={isAuthenticed}
-      />
+      {isLoading ? (
+        <Skeleton className="w-full h-60" />
+      ) : (
+        <ApplyModal
+          open={openApply}
+          setopen={setopenApply}
+          jobSlug={offerSlug}
+          jobTitle={offerTitle}
+          userProfile={
+            myProfile
+              ? {
+                fullname: myProfile.fullname,
+                email: myProfile.email,
+                phone: myProfile.phone as string,
+                cvUrl: myProfile?.candidateProfile?.cvUrl || "",
+              }
+              : null
+          }
+          isAuthenticated={token ? true : false}
+        />
+      )}
     </>
   );
 };

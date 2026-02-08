@@ -87,7 +87,7 @@ export default function Header() {
         <Link href="/" className="flex items-center space-x-2">
           <Image
             src="/images/connect-student-logo.png"
-            alt="Student Connect Logo"
+            alt="Connect Student Logo"
             width={500}
             height={500}
             className="object-contain w-[100px] md:w-[120px] 2xl:w-[150px]"

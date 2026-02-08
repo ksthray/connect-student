@@ -7,6 +7,7 @@ type Query = {
   query: string;
   params?: any;
   refetch?: any;
+  enabled?: boolean;
 };
 
 const headers: Record<string, string> = {
@@ -14,7 +15,7 @@ const headers: Record<string, string> = {
 };
 
 //get data
-export function useFetch({ route, query, params }: Query) {
+export function useFetch({ route, query, params, enabled }: Query) {
   const handleFetchData = async () => {
     try {
       const { data } = await api.get(`${route}`, {
@@ -31,6 +32,7 @@ export function useFetch({ route, query, params }: Query) {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     staleTime: 0,
+    enabled: enabled,
   });
 
   return {

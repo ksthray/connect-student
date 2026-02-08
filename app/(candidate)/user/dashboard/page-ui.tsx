@@ -100,7 +100,7 @@ export default function CandidateDashboard({ token }: { token: string }) {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground mb-2">
-          Content de te revoir, {user.fullname}! 👋
+          Content de te revoir, <span className="capitalize">{user.fullname}</span>! 👋
         </h1>
         <p className="text-muted-foreground">
           Suivez vos candidatures et découvrez de nouvelles opportunités.
@@ -146,7 +146,7 @@ export default function CandidateDashboard({ token }: { token: string }) {
           </div>
 
           <div className="space-y-4">
-            {recentApplications.map((app) => (
+            {recentApplications?.slice(0, 5)?.map((app) => (
               <div
                 key={app.id}
                 className="flex items-start gap-4 md:p-4 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-border">

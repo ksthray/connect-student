@@ -219,15 +219,18 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
     const statusTitle = isPending
       ? "Soumission en cours..."
       : isSuccess
-      ? "Candidature Envoyée !"
-      : "Échec de la Candidature";
+        ? "Candidature Envoyée !"
+        : "Échec de la Candidature";
     const StatusIcon = isPending ? Loader2 : isSuccess ? CheckCircle : XCircle;
     const statusMessage = isPending
       ? "Veuillez patienter..."
       : isSuccess
-      ? "Félicitations ! Votre candidature a été transmise."
-      : (error as any)?.response?.data?.message ||
+        ? "Félicitations ! Votre candidature a été transmise."
+        : (error as any)?.response?.data?.message ||
         "Une erreur inconnue est survenue.";
+
+
+
 
     return (
       <Dialog open={open} onOpenChange={setopen}>
@@ -237,13 +240,12 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
           </DialogHeader>
           <div className="py-4 text-center flex flex-col items-center">
             <StatusIcon
-              className={`w-10 h-10 ${
-                isSuccess
-                  ? "text-green-500"
-                  : isError
+              className={`w-10 h-10 ${isSuccess
+                ? "text-green-500"
+                : isError
                   ? "text-red-500"
                   : "text-primary"
-              } ${isPending ? "animate-spin" : ""}`}
+                } ${isPending ? "animate-spin" : ""}`}
             />
             <p className="mt-4 text-sm text-muted-foreground">
               {statusMessage}
@@ -301,20 +303,20 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
               </div>
             </div>
             {/* Téléphone */}
-            <div>
-              <Label htmlFor="phone">Numéro de Téléphone *</Label>
-              <div className="relative mt-1">
-                <Input
-                  id="phone"
-                  value={userProfile?.phone || "Non défini"}
-                  disabled
-                  className="pl-9"
-                />
-                <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              </div>
+
+          </div>
+          <div>
+            <Label htmlFor="phone">Numéro de Téléphone *</Label>
+            <div className="relative mt-1">
+              <Input
+                id="phone"
+                value={userProfile?.phone || "Non défini"}
+                disabled
+                className="pl-9"
+              />
+              <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             </div>
           </div>
-
           {/* CV URL / Upload */}
           <div className="space-y-2 pt-4">
             <Label htmlFor="cvFile">CV Actuel *</Label>
@@ -326,8 +328,8 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
                     isUploading
                       ? "Téléchargement en cours..."
                       : formData.cvUrl
-                      ? `CV: ${formData.cvUrl.split("/").pop() || "Prêt"}` // Affiche le nom du fichier
-                      : "Aucun CV sélectionné/défini."
+                        ? `CV: ${formData.cvUrl.split("/").pop() || "Prêt"}` // Affiche le nom du fichier
+                        : "Aucun CV sélectionné/défini."
                   }
                   disabled
                   className="pl-9 pr-2 border-dashed"

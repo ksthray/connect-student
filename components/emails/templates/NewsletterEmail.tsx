@@ -41,7 +41,7 @@ export const NewsletterEmail = ({
             >
                 <Body className="bg-offwhite">
                     <Container className="my-10">
-                        <Text className="text-sm text-textPrimary">New Hope College</Text>
+                        <Text className="text-sm text-textPrimary">Connect Student</Text>
                         <Text className="text-xl font-semibold text-gray-800 mt-4">
                             📰 Merci de vous être abonné à notre newsletter
                         </Text>

@@ -34,6 +34,7 @@ import {
   PlanSubscriptionType,
   SectorType,
 } from "@/entities/types";
+import Link from "next/link";
 
 // --- Types adaptés à votre code BDD ---
 
@@ -184,21 +185,25 @@ export default function OnboardingConvert({
     try {
       const formData = new FormData();
       formData.append("file", pdfFile);
+      formData.append("upload_preset", "newhope");
 
-      // NOTE: Remplacer l'URL mockée par votre endpoint d'upload réel si nécessaire
-      const { data } = await axios.post(
-        `https://apiw3.faja-lobi.com/api/upload`,
+      // Pour les PDF, Cloudinary accepte souvent l'endpoint /image/upload,
+      // mais /auto/upload est plus sûr pour détecter le format.
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dgfkv4isa/image/upload",
         formData
       );
 
-      if (data.state && data.datas) {
-        // Assurez-vous que data.datas contient l'URL
+      // Cloudinary renvoie les données directement dans response.data
+      if (response.data && response.data.secure_url) {
         toast.success(`"${pdfFile.name}" téléchargé avec succès !`, {
           id: toastId,
         });
-        return data.datas; // Doit retourner l'URL
+
+        // On retourne l'URL sécurisée fournie par Cloudinary
+        return response.data.secure_url;
       } else {
-        toast.error(`Erreur lors de l'envoi de "${pdfFile.name}"`, {
+        toast.error(`Erreur inattendue lors de l'envoi de "${pdfFile.name}"`, {
           id: toastId,
         });
         return null;
@@ -338,8 +343,8 @@ export default function OnboardingConvert({
                 {step === 1
                   ? "Personnalisation"
                   : step === 2
-                  ? "Crée ton Profil"
-                  : "Boost ta carrière"}
+                    ? "Crée ton Profil"
+                    : "Boost ta carrière"}
               </h2>
             </div>
             <span className="text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-full">
@@ -371,8 +376,8 @@ export default function OnboardingConvert({
                         role === "STUDENT"
                           ? "Étudiant"
                           : role === "GRADUATE"
-                          ? "Diplômé"
-                          : "Professionnel";
+                            ? "Diplômé"
+                            : "Professionnel";
                       const Icon =
                         role === "STUDENT" ? GraduationCap : Briefcase;
 
@@ -382,17 +387,15 @@ export default function OnboardingConvert({
                           onClick={() =>
                             setValue("role", role as UserLevelType)
                           }
-                          className={`cursor-pointer border-2 rounded-xl p-4 transition-all hover:border-primary/50 flex flex-col items-center justify-center text-center gap-2 ${
-                            watchRole === role
-                              ? "border-premiere bg-white shadow-md text-premiere"
-                              : "border-border bg-card"
-                          }`}>
+                          className={`cursor-pointer border-2 rounded-xl p-4 transition-all hover:border-primary/50 flex flex-col items-center justify-center text-center gap-2 ${watchRole === role
+                            ? "border-premiere bg-white shadow-md text-premiere"
+                            : "border-border bg-card"
+                            }`}>
                           <Icon
-                            className={`w-5 h-5 ${
-                              watchRole === role
-                                ? "text-premiere"
-                                : "text-primary"
-                            } `}
+                            className={`w-5 h-5 ${watchRole === role
+                              ? "text-premiere"
+                              : "text-primary"
+                              } `}
                           />
                           <span className="font-semibold text-sm">{label}</span>
                         </div>
@@ -418,11 +421,10 @@ export default function OnboardingConvert({
                           <div
                             key={sector.id}
                             onClick={() => toggleSector(sector.id)} // Utilisation de toggleSector
-                            className={`w-max cursor-pointer border rounded-lg p-3 transition-all hover:shadow-sm flex items-center gap-2 ${
-                              isSelected
-                                ? "border-premiere bg-white "
-                                : "border-border bg-card"
-                            }`}>
+                            className={`w-max cursor-pointer border rounded-lg p-3 transition-all hover:shadow-sm flex items-center gap-2 ${isSelected
+                              ? "border-premiere bg-white "
+                              : "border-border bg-card"
+                              }`}>
                             <span className="text-sm font-medium line-clamp-1">
                               {sector.name}
                             </span>
@@ -449,11 +451,11 @@ export default function OnboardingConvert({
               <motion.div key="step2" {...slideAnimation} className="space-y-6">
                 {offersPreview.length > 0 && (
                   <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 flex gap-3 items-start">
-                    <div className="bg-blue-600 rounded-full p-1 mt-0.5 shrink-0">
+                    <div className="bg-premiere rounded-full p-1 mt-0.5 shrink-0">
                       <Sparkles className="w-3 h-3 text-white" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-blue-900">
+                      <h4 className="text-sm font-bold text-premiere">
                         {offersPreview.length} offre(s) matche(nt) !
                       </h4>
                       <p className="text-xs text-blue-700 mt-1">
@@ -593,25 +595,25 @@ export default function OnboardingConvert({
                 {isLoadingSubscriptions ? (
                   <p className="text-center">Chargement des plans...</p>
                 ) : standardPlan ? (
-                  <div className="relative border-2 border-blue-600 rounded-xl p-5 bg-blue-50/50 shadow-sm">
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                  <div className="relative border-2 border-premiere rounded-xl p-5 bg-blue-50/50 shadow-sm">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-premiere text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
                       Recommandé
                     </div>
 
                     <div className="flex justify-between items-end mb-4 border-b border-blue-200 pb-4">
                       <div>
-                        <h3 className="font-bold text-lg text-blue-900">
+                        <h3 className="font-bold text-lg text-premiere">
                           {standardPlan.name}
                         </h3>
-                        <p className="text-xs text-blue-600">
+                        <p className="text-xs text-premiere">
                           Pour les étudiants sérieux
                         </p>
                       </div>
                       <div className="text-right">
-                        <span className="text-2xl font-bold text-blue-900">
+                        <span className="text-2xl font-bold text-premiere">
                           {standardPlan.priceUSD}$
                         </span>
-                        <span className="text-xs text-blue-600">/mois</span>
+                        <span className="text-xs text-premiere">/mois</span>
                       </div>
                     </div>
 
@@ -620,7 +622,7 @@ export default function OnboardingConvert({
                         <li
                           key={i}
                           className="flex items-start gap-2 text-sm text-gray-700">
-                          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-4 h-4 text-premiere shrink-0 mt-0.5" />
                           {item}
                         </li>
                       ))}
@@ -664,8 +666,13 @@ export default function OnboardingConvert({
             <div className="w-full space-y-3">
               <Button
                 className="w-full bg-premiere hover:bg-premiere-foreground text-lg py-6 shadow-lg shadow-blue-200"
-                onClick={onSubscribe}
-                disabled={isSubmitting || !standardPlan}>
+                // onClick={onSubscribe}
+                onClick={() => toast('Fonctionnalité pas encore disponible', {
+                  action: <Button variant={'secondary'} onClick={onContinueFree}>Retourner à l'accueil</Button>
+                })}
+                // disabled={isSubmitting || !standardPlan}
+                disabled={true}
+              >
                 {isSubmitting
                   ? "Activation..."
                   : `Passer au Standard (${standardPlan?.priceUSD || "X"}$)`}
@@ -673,8 +680,8 @@ export default function OnboardingConvert({
               <Button
                 variant="ghost"
                 className="w-full text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
-                onClick={onContinueFree}>
-                Non merci, je reste en gratuit avec des limites
+              >
+                <Link onClick={onContinueFree} href="/connexion">Se connecter à mon compte</Link>
               </Button>
             </div>
           ) : (

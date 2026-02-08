@@ -44,21 +44,20 @@ const MenuMobile = ({
               key={menu.id}
               href={menu.link}
               onClick={toggleMenu}
-              className={`hover:text-premiere transition-colors ${
-                path === menu.link && "text-premiere"
-              }`}>
+              className={`hover:text-premiere transition-colors ${path === menu.link && "text-premiere"
+                }`}>
               {menu.name}
             </Link>
           ))}
         </nav>
         <SheetFooter>
-          <Button
+          {/* <Button
             variant="outline"
             className="border-premiere bg-transparent text-premiere hover:bg-white/80 hover:text-premiere"
             asChild
             onClick={toggleMenu}>
             <Link href="/se-reabonner">Payer l&apos;abonnement</Link>
-          </Button>
+          </Button> */}
           {token ? (
             <Button
               onClick={() => handleLogout(2)}

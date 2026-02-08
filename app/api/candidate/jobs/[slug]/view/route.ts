@@ -8,15 +8,15 @@ import { cookies } from "next/headers";
 type Params = { params: Promise<{ slug: string }> };
 
 export async function POST(request: Request, { params }: Params) {
-  const jobId = (await params).slug;
+  const jobSlug = (await params).slug;
 
   const cookieStore = cookies();
 
   // Clé du cookie pour cette offre spécifique (ex: viewed_job_clx5t...123)
-  const cookieName = `viewed_job_${jobId}`;
+  const cookieName = `viewed_job_${jobSlug}`;
 
-  // Durée d'expiration du cookie (24 heures en secondes)
-  const COOKIE_MAX_AGE = 60 * 60 * 24;
+  // Durée d'expiration du cookie (48 heures en secondes)
+  const COOKIE_MAX_AGE = 60 * 60 * 48;
 
   try {
     // 1. VÉRIFICATION DU COOKIE (Anti-triche)
@@ -29,13 +29,13 @@ export async function POST(request: Request, { params }: Params) {
           state: true,
           message: "Vue déjà comptée pour cette offre récemment.",
         },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
     // 2. INCÉMENTATION DANS PRISMA (Vue valide)
     const updatedJob = await prisma.jobOffer.update({
-      where: { id: jobId },
+      where: { slug: jobSlug },
       data: {
         viewCount: {
           increment: 1, // Incrémente le compteur de 1
@@ -71,19 +71,19 @@ export async function POST(request: Request, { params }: Params) {
         },
         message: "Vue enregistrée avec succès.",
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error(
       "Erreur serveur lors de l'incrémentation du compteur de vues:",
-      error
+      error,
     );
     return NextResponse.json(
       {
         state: false,
         error: "Erreur serveur interne lors du comptage de la vue.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

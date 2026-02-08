@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import { sendContactConfirmationEmail } from "@/components/emails/send-emails";
 
 const messageSchema = z.object({
   name: z.string().min(2),
@@ -25,6 +26,10 @@ export async function POST(req: Request) {
         // phone is optional in the schema now, so we can omit it
       },
     });
+
+    let messageSummary = message.slice(0, 50);
+
+    await sendContactConfirmationEmail(email, name, messageSummary);
 
     return NextResponse.json(
       { data: newMessage, state: true, message: "Message envoyé avec succès" },

@@ -84,7 +84,7 @@ const PhotoProfil = ({
 
               {/* Basic Info */}
               <div className="text-center">
-                <h1 className="text-3xl font-bold text-foreground text-center">
+                <h1 className="text-3xl font-bold text-foreground text-center capitalize">
                   {fullname}
                 </h1>
                 <p className="">{city}</p>
