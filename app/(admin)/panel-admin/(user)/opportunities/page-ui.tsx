@@ -19,6 +19,7 @@ import {
 } from "@/services/helpers";
 import AddOffer from "./components/add-offer";
 import UpdateOffer from "./components/update-offer";
+import { OpportunityDetailsDialog } from "./components/opportunity-details";
 import { Badge } from "@/components/ui/badge";
 import { useAdminStats } from "@/context/AdminStatsContext";
 import { toast } from "sonner";
@@ -43,6 +44,7 @@ export default function Opportunities({ token }: { token: string }) {
   const [open, setopen] = useState(false);
   const [openUpdate, setopenUpdate] = useState(false);
   const [offerData, setofferData] = useState({} as JobOfferType);
+  const [selectedOffer, setSelectedOffer] = useState<JobOfferType | null>(null);
 
   const deleteMutation = useMutation({
     onMutate: async () => {
@@ -108,7 +110,7 @@ export default function Opportunities({ token }: { token: string }) {
             <Switch
               checked={item.visibility}
               id="active"
-              // onCheckedChange={(v) => handleSwitchData(item.id as string, 0)}
+            // onCheckedChange={(v) => handleSwitchData(item.id as string, 0)}
             />
           </div>
         );
@@ -136,7 +138,9 @@ export default function Opportunities({ token }: { token: string }) {
       cell: ({ row }) => (
         <div>
           <div className="flex items-center justify-center gap-2">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button
+              onClick={() => setSelectedOffer(row.original)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>
             <button
@@ -258,6 +262,11 @@ export default function Opportunities({ token }: { token: string }) {
         open={openUpdate}
         setopen={setopenUpdate}
         offerData={offerData}
+      />
+      <OpportunityDetailsDialog
+        offer={selectedOffer}
+        open={!!selectedOffer}
+        onClose={() => setSelectedOffer(null)}
       />
     </div>
   );

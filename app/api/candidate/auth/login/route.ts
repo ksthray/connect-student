@@ -39,7 +39,9 @@ export async function POST(req: Request) {
       },
     });
 
-    await sendOtpEmail(email, user.fullname!, otpCode);
+    console.log("otp:", otpCode);
+
+    // await sendOtpEmail(email, user.fullname!, otpCode);
 
     return NextResponse.json({
       message: "Code OTP envoyé à votre email.",

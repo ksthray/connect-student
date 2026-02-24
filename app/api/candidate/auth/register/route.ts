@@ -12,6 +12,7 @@ import {
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("GO");
     // 1. Validation des données du corps de la requête
     const body = await req.json();
     const validatedData = registerSchema.safeParse(body);
@@ -64,6 +65,8 @@ export async function POST(req: NextRequest) {
 
     const otpCode = generateOTP();
     const expiresAt = addMinutes(new Date(), 10); // expire dans 10 min
+
+    console.log("otp:", otpCode);
 
     const newUser = await prisma.user.create({
       data: {

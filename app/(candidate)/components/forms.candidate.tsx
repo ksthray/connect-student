@@ -267,21 +267,19 @@ const FormsCandidate = ({
             )}
           />
 
-          {/* UNIVERSITY – ONLY FOR STUDENT */}
-          {myProfile.candidateProfile?.level === "STUDENT" && (
-            <FormField
-              control={form.control}
-              name="university"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Université</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Université de Kinshasa" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          )}
+          {/* UNIVERSITY */}
+          <FormField
+            control={form.control}
+            name="university"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Université</FormLabel>
+                <FormControl>
+                  <Input placeholder="Université de Kinshasa" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
 
           {/* ABOUT */}
           <FormField
@@ -320,6 +318,9 @@ const FormsCandidate = ({
                       selected={field.value}
                       onSelect={field.onChange}
                       initialFocus
+                      captionLayout="dropdown"
+                      startMonth={new Date(1900, 0)}
+                      endMonth={new Date()}
                     />
                   </PopoverContent>
                 </Popover>

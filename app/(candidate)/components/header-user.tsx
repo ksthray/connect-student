@@ -55,7 +55,7 @@ export default function HeaderUser() {
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium text-gray-700 hidden sm:block">
+                <span className="text-sm font-medium text-gray-700 hidden sm:block capitalize">
                   {user.fullname}
                 </span>
               </div>
