@@ -165,6 +165,18 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
       setFormData((prev) => ({ ...prev, cvUrl: newCvUrl }));
     }
   };
+
+  const handleCoverLetterUpload = async (file: File) => {
+    if (file.type !== "application/pdf") {
+      toast.error("Seuls les fichiers PDF sont acceptés pour la lettre de motivation.");
+      return;
+    }
+
+    const newUrl = await uploadToPdfCloudinary(file);
+    if (newUrl) {
+      setFormData((prev) => ({ ...prev, coverLetter: newUrl }));
+    }
+  };
   // ---------------------------------------
 
   // A. Étape 1 : Demande de connexion (si non connecté)
@@ -375,23 +387,50 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
           </div>
 
           {/* Lettre de Motivation (Optionnel) */}
-          <div className="pt-4">
-            <Label htmlFor="coverLetter">
-              Lettre de Motivation (Optionnel)
-            </Label>
-            <Textarea
-              id="coverLetter"
-              value={formData.coverLetter}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  coverLetter: e.target.value,
-                }))
-              }
-              placeholder="Écrivez ici votre lettre de motivation ou votre message d'accompagnement..."
-              rows={4}
-              className="mt-1"
-            />
+          <div className="space-y-2 pt-4">
+            <Label htmlFor="coverLetterFile">Lettre de Motivation (Optionnel)</Label>
+            <div className="flex items-center gap-3">
+              <div className="relative grow">
+                <Input
+                  id="coverLetterUrl"
+                  value={
+                    isUploading
+                      ? "Téléchargement en cours..."
+                      : formData.coverLetter
+                        ? `LM: ${formData.coverLetter.split("/").pop() || "Prêt"}`
+                        : "Aucune lettre de motivation sélectionnée."
+                  }
+                  disabled
+                  className="pl-9 pr-2 border-dashed"
+                />
+                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              </div>
+
+              <Label htmlFor="lm-upload-input" className="cursor-pointer">
+                <Button asChild variant="outline" disabled={isUploading}>
+                  <div>
+                    {isUploading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <FileText className="w-4 h-4 mr-2" />
+                    )}
+                    {formData.coverLetter ? "Modifier LM" : "Télécharger LM (PDF)"}
+                  </div>
+                </Button>
+              </Label>
+              <input
+                id="lm-upload-input"
+                type="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleCoverLetterUpload(e.target.files[0]);
+                    e.target.value = "";
+                  }
+                }}
+              />
+            </div>
           </div>
 
           <DialogFooter className="pt-4 flex justify-end gap-2 w-full">

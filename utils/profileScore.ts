@@ -32,7 +32,7 @@ interface ProfileStatus {
 }
 
 export function calculateProfileCompletion(
-  data: CandidateProfileData
+  data: CandidateProfileData,
 ): ProfileStatus {
   let score = 0;
   const TOTAL_POINTS = 100;
@@ -121,4 +121,7 @@ export function calculateProfileCompletion(
     score: Math.min(score, TOTAL_POINTS),
     details: details,
   };
+}
+export function calculateScoreValue(data: CandidateProfileData): number {
+  return calculateProfileCompletion(data).score;
 }

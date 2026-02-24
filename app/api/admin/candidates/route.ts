@@ -2,7 +2,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { authenticate } from "@/lib/authMiddleware";
-import { calculateProfileCompletion } from "@/utils/profileScore";
+import {
+  calculateProfileCompletion,
+  calculateScoreValue,
+} from "@/utils/profileScore";
 
 export async function GET(request: Request) {
   // 1. VÉRIFICATION RBAC : Seul l'ADMIN est autorisé
@@ -63,7 +66,7 @@ export async function GET(request: Request) {
 
       // Nombre de candidatures (Applications)
       applicationsCount: candidate.candidateProfile?._count.applications,
-      score: calculateProfileCompletion({
+      score: calculateScoreValue({
         user: {
           fullname: candidate.fullname,
           email: candidate.email,
@@ -86,7 +89,7 @@ export async function GET(request: Request) {
         state: true,
         data: formattedCandidates,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Erreur serveur lors du listing des candidats:", error);
@@ -95,7 +98,7 @@ export async function GET(request: Request) {
         state: false,
         error: "Erreur serveur interne lors du listing des candidats.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
