@@ -17,9 +17,9 @@ const HeroContact = () => {
     {
       icon: Phone,
       title: "Téléphone",
-      description: "Lun-Ven, 8h30 - 16h30",
-      value: "+243 854 487 045",
-      href: "tel:+243854487045",
+      description: "Lun-Ven, 8h30 - 16h30; Sam, 9h30 - 13h00; Dimanche, Fermé",
+      value: "+243 989 281 540",
+      href: "tel:+243989281540",
       type: "link",
     },
     {

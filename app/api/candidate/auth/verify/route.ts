@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     if (!validation.success) {
       return NextResponse.json(
         { state: false, error: validation.error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,9 +29,12 @@ export async function POST(req: Request) {
     ) {
       return NextResponse.json(
         { message: "Code invalide ou expiré.", state: false },
-        { status: 401 }
+        { status: 401 },
       );
     }
+
+    //verified user
+    let verifiedUser = user.emailVerified;
 
     // Authentifié, nettoyer OTP
     await prisma.user.update({
@@ -42,6 +45,15 @@ export async function POST(req: Request) {
       },
     });
 
+    if (!verifiedUser) {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          emailVerified: true,
+        },
+      });
+    }
+
     const token = jwt.sign(
       {
         id: user.id,
@@ -49,9 +61,10 @@ export async function POST(req: Request) {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        image: user.image,
       },
       JWT_SECRET,
-      { expiresIn: "30d" }
+      { expiresIn: "30d" },
     );
 
     const response = NextResponse.json({
@@ -73,7 +86,7 @@ export async function POST(req: Request) {
     console.error("[OTP_AUTH]", error);
     return NextResponse.json(
       { message: "Erreur lors de la connexion ", state: false },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -47,7 +47,7 @@ const getTransporter = (sender: SenderType = "default") => {
     });
   }
 
-  // Default sender: contact@newhope-college.com
+  // Default sender: contact@connect-college.com
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),

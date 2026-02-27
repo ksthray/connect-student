@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Edit2, Trash2, Search, Eye } from "lucide-react";
 import { OpportunityRecruiter } from "@/entities/types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useFetch } from "@/services/query";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -21,6 +21,9 @@ import { Badge } from "@/components/ui/badge";
 import { useCompanyProfile } from "@/hooks/useCompanyProfile";
 import AddOffer from "./components/add-offer";
 import UpdateOffer from "./components/update-offer";
+import { OpportunityDetailsDialog } from "@/app/(admin)/panel-admin/(user)/opportunities/components/opportunity-details";
+import { toast } from "sonner";
+import api from "@/services/api";
 
 export default function RecruiterOpportunities({ token }: { token: string }) {
   const {
@@ -46,6 +49,7 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
   const [open, setopen] = useState(false);
   const [openUpdate, setopenUpdate] = useState(false);
   const [offerData, setofferData] = useState({} as OpportunityRecruiter);
+  const [selectedOffer, setSelectedOffer] = useState<OpportunityRecruiter | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<
@@ -62,17 +66,16 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
     "all" | "active" | "desactive"
   >("all");
 
-  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   const [formData, setFormData] = useState<{
     title: string;
     type:
-      | "INTERNSHIP"
-      | "FULL_TIME"
-      | "PART_TIME"
-      | "CONFERENCE"
-      | "EVENT"
-      | "TRAINING";
+    | "INTERNSHIP"
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "CONFERENCE"
+    | "EVENT"
+    | "TRAINING";
     description: string;
     salary: string;
     location: string;
@@ -83,6 +86,68 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
     salary: "",
     location: "",
   });
+
+  const deleteMutation = useMutation({
+    onMutate: async () => {
+      const toastId = toast.loading("Suppression en cours...");
+      return { toastId };
+    },
+    mutationFn: (jobId: string) => {
+      return api.delete(`/recruiter/jobs/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: (res: any, variables: string, context: any) => {
+      if (res.data.state) {
+        toast.success(res.data.message, { id: context?.toastId });
+        queryClient.invalidateQueries({ queryKey: ["opportunities"] });
+      }
+    },
+    onError: (err: any, variables: string, context: any) => {
+      console.log(err);
+      toast.error(err.response?.data?.message || "Erreur de suppression", {
+        id: context?.toastId,
+      });
+    },
+  });
+
+  const toggleActiveMutation = useMutation({
+    onMutate: async () => {
+      const toastId = toast.loading("Mise à jour du statut...");
+      return { toastId };
+    },
+    mutationFn: ({ jobId, active }: { jobId: string; active: boolean }) => {
+      return api.put(
+        `/recruiter/jobs/${jobId}/active`,
+        { active },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    onSuccess: (res: any, variables: { jobId: string; active: boolean }, context: any) => {
+      if (res.data.state) {
+        toast.success(res.data.message, { id: context?.toastId });
+        queryClient.invalidateQueries({ queryKey: ["opportunities"] });
+      }
+    },
+    onError: (err: any, variables: { jobId: string; active: boolean }, context: any) => {
+      console.log(err);
+      toast.error(err.response?.data?.message || "Erreur de mise à jour", {
+        id: context?.toastId,
+      });
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette offre ?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   const filteredOpportunities = opportunities.filter((opp) => {
     const matchesSearch =
@@ -131,7 +196,13 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
             <Switch
               checked={item.active}
               id="active"
-              // onCheckedChange={(v) => handleSwitchData(item.id as string, 0)}
+              onCheckedChange={(v) =>
+                toggleActiveMutation.mutate({
+                  jobId: item.id as string,
+                  active: v,
+                })
+              }
+              disabled={toggleActiveMutation.isPending}
             />
           </div>
         );
@@ -164,7 +235,9 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
       cell: ({ row }) => (
         <div>
           <div className="flex items-center justify-center gap-2">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button
+              onClick={() => setSelectedOffer(row.original)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>
             <button
@@ -176,7 +249,7 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
               <Edit2 className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>
             <button
-              // onClick={() => handleDelete(row.original.id)}
+              onClick={() => handleDelete(row.original.id)}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Trash2 className="w-4 h-4 text-red-500" />
             </button>
@@ -273,6 +346,11 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
         open={openUpdate}
         setopen={setopenUpdate}
         offerData={offerData}
+      />
+      <OpportunityDetailsDialog
+        offer={selectedOffer as any}
+        open={!!selectedOffer}
+        onClose={() => setSelectedOffer(null)}
       />
     </div>
   );

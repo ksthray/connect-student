@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   if (!validation.success) {
     return NextResponse.json(
       { state: false, error: validation.error.issues },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   if (!data.companyId) {
     return NextResponse.json(
       { state: false, error: "L'ID de l'entreprise est requis." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   if (!companyExists) {
     return NextResponse.json(
       { state: false, error: "L'ID de l'entreprise spécifié n'existe pas." },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
         data: newJobOffer,
         message: "Offre d'emploi créée avec succès.",
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Erreur serveur lors de la création de l'offre:", error);
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
         state: false,
         error: "Erreur interne du serveur lors de la création de l'offre.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -125,6 +125,7 @@ export async function GET(request: Request) {
         title: true,
         slug: true,
         companyId: true,
+        coverImage: true,
         description: true,
         deadline: true,
         location: true,
@@ -133,6 +134,12 @@ export async function GET(request: Request) {
         viewCount: true,
         type: true,
         createdAt: true,
+        sectors: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
 
         // L'agrégation est bien demandée au niveau racine de 'select'
         _count: {
@@ -155,6 +162,7 @@ export async function GET(request: Request) {
       title: job.title,
       slug: job.slug,
       description: job.description,
+      coverImage: job.coverImage,
       companyId: job.companyId,
       deadline: job.deadline,
       companyName: job.company.companyName,
@@ -163,6 +171,7 @@ export async function GET(request: Request) {
       visibility: job.visibility,
       viewCount: job.viewCount,
       type: job.type,
+      sectors: job.sectors,
       createdAt: job.createdAt,
       totalApplications: job._count.applications,
     }));
@@ -173,7 +182,7 @@ export async function GET(request: Request) {
         state: true,
         data: formattedJobs,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.log(error);
@@ -183,7 +192,7 @@ export async function GET(request: Request) {
         state: false,
         error: "Erreur serveur lors de la récupération des catégories.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

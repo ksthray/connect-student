@@ -9,6 +9,7 @@ export interface CompanyProfileData {
   location: string | null;
   logo: string | null;
   industry: string | null;
+  website: string | null;
 }
 
 export interface UserWithCompany {
@@ -17,11 +18,12 @@ export interface UserWithCompany {
   phone: string | null;
   role: string;
   companyProfile: CompanyProfileData | null;
+  updatedAt: Date;
 }
 
 // --- Le Hook ---
 export const useCompanyProfile = (
-  token: string | null
+  token: string | null,
 ): {
   data: UserWithCompany | undefined;
   isLoading: boolean;

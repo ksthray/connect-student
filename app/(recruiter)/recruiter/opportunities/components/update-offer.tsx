@@ -60,12 +60,12 @@ type DataPost = {
   description: string;
   location: string;
   type:
-    | "INTERNSHIP"
-    | "FULL_TIME"
-    | "PART_TIME"
-    | "EVENT"
-    | "CONFERENCE"
-    | "TRAINING";
+  | "INTERNSHIP"
+  | "FULL_TIME"
+  | "PART_TIME"
+  | "EVENT"
+  | "CONFERENCE"
+  | "TRAINING";
   deadline: Date;
   detail?: string;
   requirements?: string;
@@ -78,20 +78,20 @@ type DataPost = {
 const jobTypes: {
   label: string;
   value:
-    | "INTERNSHIP"
-    | "FULL_TIME"
-    | "PART_TIME"
-    | "EVENT"
-    | "CONFERENCE"
-    | "TRAINING";
+  | "INTERNSHIP"
+  | "FULL_TIME"
+  | "PART_TIME"
+  | "EVENT"
+  | "CONFERENCE"
+  | "TRAINING";
 }[] = [
-  { label: "Stage", value: "INTERNSHIP" },
-  { label: "Emploi Temps Plein", value: "FULL_TIME" },
-  { label: "Emploi Temps Partiel", value: "PART_TIME" },
-  { label: "Événement", value: "EVENT" },
-  { label: "Conférence", value: "CONFERENCE" },
-  { label: "Formation", value: "TRAINING" },
-];
+    { label: "Stage", value: "INTERNSHIP" },
+    { label: "Emploi Temps Plein", value: "FULL_TIME" },
+    { label: "Emploi Temps Partiel", value: "PART_TIME" },
+    { label: "Événement", value: "EVENT" },
+    { label: "Conférence", value: "CONFERENCE" },
+    { label: "Formation", value: "TRAINING" },
+  ];
 
 const UpdateOffer = ({
   companyId,
@@ -131,12 +131,12 @@ const UpdateOffer = ({
     description: string;
     location: string;
     type:
-      | "INTERNSHIP"
-      | "FULL_TIME"
-      | "PART_TIME"
-      | "EVENT"
-      | "CONFERENCE"
-      | "TRAINING";
+    | "INTERNSHIP"
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "EVENT"
+    | "CONFERENCE"
+    | "TRAINING";
     deadline: string;
     detail?: string;
     requirements?: string;
@@ -192,10 +192,10 @@ const UpdateOffer = ({
     try {
       const formData = new FormData();
       formData.append("file", croppedImage);
-      formData.append("upload_preset", "newhope");
+      formData.append("upload_preset", "connect");
 
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dgfkv4isa/image/upload",
+        "https://api.cloudinary.com/v1_1/drarsensj/auto/upload",
         formData
       );
       setcover(response.data.secure_url);
