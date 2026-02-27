@@ -15,6 +15,7 @@ import { AppTable } from "@/components/admin/app-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import AddCompany from "./components/add-company";
 import UpdateCompany from "./components/update-company";
+import { CompanyDetailsDialog } from "./components/company-details";
 import Link from "next/link";
 
 export default function Companies({ token }: { token: string }) {
@@ -35,6 +36,7 @@ export default function Companies({ token }: { token: string }) {
   const [open, setopen] = useState(false);
   const [openUpdate, setopenUpdate] = useState(false);
   const [companyData, setcompanyData] = useState({} as CompanyType);
+  const [selectedCompany, setSelectedCompany] = useState<CompanyType | null>(null);
 
   const deleteMutation = useMutation({
     onMutate: async () => {
@@ -122,7 +124,9 @@ export default function Companies({ token }: { token: string }) {
       cell: ({ row }) => (
         <div>
           <div className="flex items-center justify-center gap-2">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button
+              onClick={() => setSelectedCompany(row.original)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>
             <button
@@ -201,6 +205,11 @@ export default function Companies({ token }: { token: string }) {
         open={openUpdate}
         setopen={setopenUpdate}
         company={companyData}
+      />
+      <CompanyDetailsDialog
+        company={selectedCompany}
+        open={!!selectedCompany}
+        onClose={() => setSelectedCompany(null)}
       />
     </div>
   );

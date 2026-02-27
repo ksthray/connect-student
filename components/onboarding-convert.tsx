@@ -185,12 +185,12 @@ export default function OnboardingConvert({
     try {
       const formData = new FormData();
       formData.append("file", pdfFile);
-      formData.append("upload_preset", "newhope");
+      formData.append("upload_preset", "connect");
 
       // Pour les PDF, Cloudinary accepte souvent l'endpoint /image/upload,
       // mais /auto/upload est plus sûr pour détecter le format.
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dgfkv4isa/image/upload",
+        "https://api.cloudinary.com/v1_1/drarsensj/auto/upload",
         formData
       );
 

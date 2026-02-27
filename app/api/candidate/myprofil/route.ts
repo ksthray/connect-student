@@ -44,7 +44,7 @@ export async function PATCH(req: NextRequest) {
     // 🔁 Transaction pour cohérence
     const result = await prisma.$transaction(async (tx) => {
       // 1️⃣ Update USER
-      if (fullname || email) {
+      if (fullname || email || phone || image) {
         await tx.user.update({
           where: { id: userId },
           data: {

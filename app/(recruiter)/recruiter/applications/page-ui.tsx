@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useFetch } from "@/services/query";
 import { frDate } from "@/services/helpers";
+import { ApplicationDetailsDialog } from "./components/application-details";
 
 interface ApplicationType {
   id: string;
@@ -24,12 +25,12 @@ interface ApplicationType {
   jobOffer: {
     title: string;
     type:
-      | "INTERNSHIP"
-      | "FULL_TIME"
-      | "PART_TIME"
-      | "CONFERENCE"
-      | "EVENT"
-      | "TRAINING";
+    | "INTERNSHIP"
+    | "FULL_TIME"
+    | "PART_TIME"
+    | "CONFERENCE"
+    | "EVENT"
+    | "TRAINING";
   };
   candidate: {
     id: string;
@@ -39,6 +40,8 @@ interface ApplicationType {
       phone: string;
     };
   };
+  cvUrl: string;
+  coverLetter: string;
 }
 
 export default function RecruiterApplications({ token }: { token: string }) {
@@ -53,6 +56,14 @@ export default function RecruiterApplications({ token }: { token: string }) {
   });
 
   const applications: ApplicationType[] = data?.data || [];
+
+  const [selectedApp, setSelectedApp] = useState<ApplicationType | null>(null);
+
+  const handleWhatsAppClick = (phone: string) => {
+    // Basic formatting: remove spaces. More advanced formatting could be used based on country code.
+    const formattedPhone = phone.replace(/\s+/g, '');
+    window.open(`https://wa.me/${formattedPhone}`, '_blank');
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -165,17 +176,15 @@ export default function RecruiterApplications({ token }: { token: string }) {
                     <td className="py-4 px-6 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
-                          // onClick={() => {
-                          //   setSelectedApp(app);
-                          //   setShowDetailModal(true);
-                          // }}
+                          onClick={() => setSelectedApp(app)}
                           className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600"
                           title="View Details">
                           <Eye className="w-4 h-4" />
                         </button>
                         <button
-                          className="p-2 hover:bg-gray-200 rounded-lg transition-colors text-gray-600"
-                          title="Send Message">
+                          onClick={() => handleWhatsAppClick(app.candidate.user.phone)}
+                          className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-emerald-600"
+                          title="Contact WhatsApp">
                           <MessageSquare className="w-4 h-4" />
                         </button>
                       </div>
@@ -196,6 +205,12 @@ export default function RecruiterApplications({ token }: { token: string }) {
           )}
         </div>
       </div>
+
+      <ApplicationDetailsDialog
+        application={selectedApp}
+        open={!!selectedApp}
+        onClose={() => setSelectedApp(null)}
+      />
     </>
   );
 }

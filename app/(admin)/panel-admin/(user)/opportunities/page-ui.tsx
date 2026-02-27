@@ -24,6 +24,16 @@ import { Badge } from "@/components/ui/badge";
 import { useAdminStats } from "@/context/AdminStatsContext";
 import { toast } from "sonner";
 import api from "@/services/api";
+import { Input } from "@/components/ui/input";
+
+type JobType = {
+  INTERNSHIP: "INTERNSHIP";
+  FULL_TIME: "FULL_TIME";
+  PART_TIME: "PART_TIME";
+  EVENT: "EVENT";
+  CONFERENCE: "CONFERENCE";
+  TRAINING: "TRAINING";
+};
 
 export default function Opportunities({ token }: { token: string }) {
   const { stats, isLoading: isLoadingStat } = useAdminStats();
@@ -45,6 +55,17 @@ export default function Opportunities({ token }: { token: string }) {
   const [openUpdate, setopenUpdate] = useState(false);
   const [offerData, setofferData] = useState({} as JobOfferType);
   const [selectedOffer, setSelectedOffer] = useState<JobOfferType | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
+  const filteredOpportunities = opportunities.filter((opp) => {
+    const matchesSearch =
+      searchQuery === "" ||
+      opp.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      opp.companyName?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === "all" || opp.type === filterType;
+    return matchesSearch && matchesType;
+  });
 
   const deleteMutation = useMutation({
     onMutate: async () => {
@@ -68,6 +89,36 @@ export default function Opportunities({ token }: { token: string }) {
     onError: (err: any, variables, context) => {
       console.log(err);
       toast.error(err.response.data.message as string, {
+        id: context?.toastId,
+      });
+    },
+  });
+
+  const toggleVisibilityMutation = useMutation({
+    onMutate: async () => {
+      const toastId = toast.loading("Mise à jour de la visibilité...");
+      return { toastId };
+    },
+    mutationFn: ({ jobId, visibility }: { jobId: string; visibility: boolean }) => {
+      return api.put(
+        `/admin/jobs/${jobId}/visibility`,
+        { visibility },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    onSuccess: (res, variables, context) => {
+      if (res.data.state) {
+        toast.success(res.data.message, { id: context?.toastId });
+        queryClient.invalidateQueries({ queryKey: ["opportunities"] });
+      }
+    },
+    onError: (err: any, variables, context) => {
+      console.log(err);
+      toast.error(err.response?.data?.message || "Erreur de mise à jour", {
         id: context?.toastId,
       });
     },
@@ -110,7 +161,13 @@ export default function Opportunities({ token }: { token: string }) {
             <Switch
               checked={item.visibility}
               id="active"
-            // onCheckedChange={(v) => handleSwitchData(item.id as string, 0)}
+              onCheckedChange={(v) =>
+                toggleVisibilityMutation.mutate({
+                  jobId: item.id as string,
+                  visibility: v,
+                })
+              }
+              disabled={toggleVisibilityMutation.isPending}
             />
           </div>
         );
@@ -139,7 +196,9 @@ export default function Opportunities({ token }: { token: string }) {
         <div>
           <div className="flex items-center justify-center gap-2">
             <button
-              onClick={() => setSelectedOffer(row.original)}
+              onClick={() => {
+                setSelectedOffer(row.original)
+              }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>
@@ -225,23 +284,27 @@ export default function Opportunities({ token }: { token: string }) {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            {/* <Input
+            <Input
               placeholder="Search by title or company..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 border-2 h-11"
-            /> */}
+            />
           </div>
 
-          {/* <select
+          <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
             className="px-4 h-11 rounded-lg border-2 border-input focus:outline-none focus:border-secondary text-foreground">
-            <option value="all">All Types</option>
-            <option value="job">Jobs</option>
-            <option value="internship">Internships</option>
-            <option value="training">Training</option>
-          </select> */}
+
+            <option value="all">Tous les types</option>
+            <option value="INTERNSHIP">Stage</option>
+            <option value="FULL_TIME">Temps plein</option>
+            <option value="PART_TIME">Temps partiel</option>
+            <option value="EVENT">Événement</option>
+            <option value="CONFERENCE">Conférence</option>
+            <option value="TRAINING">Formation</option>
+          </select>
         </div>
       </div>
 
@@ -250,7 +313,7 @@ export default function Opportunities({ token }: { token: string }) {
         {!isLoading ? (
           <AppTable
             activeSearch={false}
-            data={opportunities}
+            data={filteredOpportunities}
             columns={columns}
           />
         ) : (

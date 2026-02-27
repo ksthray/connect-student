@@ -44,10 +44,10 @@ export default function CandidateProfile({ token }: { token: string }) {
       try {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", "newhope");
+        formData.append("upload_preset", "connect");
 
         const response = await axios.post(
-          "https://api.cloudinary.com/v1_1/dgfkv4isa/image/upload",
+          "https://api.cloudinary.com/v1_1/drarsensj/auto/upload",
           formData
         );
 

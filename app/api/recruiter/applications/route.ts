@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   if (!isAuthenticated || user?.role !== "COMPANY") {
     return NextResponse.json(
       { state: false, message: "Accès refusé." },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     if (!recruiterProfile?.id) {
       return NextResponse.json(
         { state: false, message: "Profil entreprise introuvable." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -54,6 +54,8 @@ export async function GET(req: NextRequest) {
           id: true,
           status: true,
           createdAt: true, // Date de la candidature
+          cvUrl: true,
+          coverLetter: true,
           // Informations sur l'offre (Titre et Type)
           jobOffer: {
             select: {
@@ -100,13 +102,13 @@ export async function GET(req: NextRequest) {
           hasPrevPage: page > 1,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Erreur lors de la récupération des candidatures:", error);
     return NextResponse.json(
       { state: false, message: "Erreur interne du serveur." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

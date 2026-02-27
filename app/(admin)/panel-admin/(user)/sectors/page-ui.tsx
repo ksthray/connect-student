@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import AddSector from "./components/add-sector";
 import { formatNumber, frDate } from "@/services/helpers";
 import UpdateSector from "./components/update-sector";
+import { SectorDetailsDialog } from "./components/sector-details";
 import { toast } from "sonner";
 import api from "@/services/api";
 
@@ -35,6 +36,7 @@ export default function Sectors({ token }: { token: string }) {
   const [open, setopen] = useState(false);
   const [openUpdate, setopenUpdate] = useState(false);
   const [sectorData, setsectorData] = useState({} as SectorType);
+  const [selectedSector, setSelectedSector] = useState<SectorType | null>(null);
 
   const deleteMutation = useMutation({
     onMutate: async () => {
@@ -115,7 +117,9 @@ export default function Sectors({ token }: { token: string }) {
       cell: ({ row }) => (
         <div>
           <div className="flex items-center justify-center gap-2">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button
+              onClick={() => setSelectedSector(row.original)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>
             <button
@@ -170,6 +174,11 @@ export default function Sectors({ token }: { token: string }) {
         sector={sectorData}
         open={openUpdate}
         setopen={setopenUpdate}
+      />
+      <SectorDetailsDialog
+        sector={selectedSector}
+        open={!!selectedSector}
+        onClose={() => setSelectedSector(null)}
       />
     </div>
   );

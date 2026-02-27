@@ -8,7 +8,7 @@ import Testimonials from "@/components/home/testimonials";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Accueil",
+  title: "Connect Student - La plateforme EdTech pour étudiants et diplômés",
 };
 
 export default function Home() {

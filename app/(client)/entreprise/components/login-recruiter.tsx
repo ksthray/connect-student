@@ -58,8 +58,6 @@ export const LoginPage = () => {
       if (data.state) {
         toast.success(data.message);
         if (data.state) {
-          console.log("datas:", data);
-
           toast.success(data.message);
           const user = data.data;
           const token = data.token;

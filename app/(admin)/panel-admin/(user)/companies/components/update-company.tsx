@@ -127,10 +127,10 @@ const UpdateCompany = ({
     try {
       const formData = new FormData();
       formData.append("file", croppedImage);
-      formData.append("upload_preset", "newhope");
+      formData.append("upload_preset", "connect");
 
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dgfkv4isa/image/upload",
+        "https://api.cloudinary.com/v1_1/drarsensj/auto/upload",
         formData
       );
       setlogo(response.data.secure_url);
