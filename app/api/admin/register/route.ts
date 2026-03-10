@@ -38,10 +38,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ state: true, data: newAdmin }, { status: 201 });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return NextResponse.json(
       { error: "Erreur interne du serveur lors de la création de l'admin." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -75,7 +75,7 @@ export async function GET(request: Request) {
     console.error("[ADMIN_GET_ALL]", error);
     return NextResponse.json(
       { message: "Erreur serveur.", state: false },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

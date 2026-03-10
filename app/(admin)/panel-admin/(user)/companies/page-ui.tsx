@@ -58,7 +58,7 @@ export default function Companies({ token }: { token: string }) {
       }
     },
     onError: (err: any, variables, context) => {
-      console.log(err);
+      // console.log(err);
       toast.error(err.response.data.message as string, {
         id: context?.toastId,
       });

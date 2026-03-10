@@ -67,7 +67,7 @@ const Testimonials = ({ token }: { token: string }) => {
       }
     },
     onError: (err: ErrorAxiosType, variables, context) => {
-      console.log(err);
+      // console.log(err);
       toast.error(err.response.data.message as string, {
         id: context?.toastId,
       });

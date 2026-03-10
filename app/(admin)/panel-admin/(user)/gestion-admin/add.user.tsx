@@ -76,7 +76,7 @@ const AddUserAdmin = ({ open, setopen }: Props) => {
     },
     onError: (err: ErrorAxiosType) => {
       toast.error(err.response.data.message as string);
-      console.log(err);
+      // console.log(err);
     },
   });
 
@@ -91,7 +91,7 @@ const AddUserAdmin = ({ open, setopen }: Props) => {
     });
   }
 
-  console.log("error", form.formState.errors);
+  // console.log("error", form.formState.errors);
   return (
     <Dialog open={open} onOpenChange={setopen}>
       <DialogContent>

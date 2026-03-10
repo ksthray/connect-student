@@ -16,7 +16,7 @@ export async function hashPassword(password: string): Promise<string> {
 
 export async function comparePassword(
   password: string,
-  hash: string
+  hash: string,
 ): Promise<boolean> {
   return bcrypt.compare(password, hash);
 }
@@ -30,10 +30,10 @@ export function generateOTP(): string {
 
 export async function sendVerificationEmail(
   email: string,
-  otp: string
+  otp: string,
 ): Promise<void> {
   // TODO: Remplacer ceci par votre implémentation Resend/SendGrid/etc.
-  console.log(`[EMAIL SIMULÉ] Envoi de l'OTP ${otp} à ${email}`);
+  // console.log(`[EMAIL SIMULÉ] Envoi de l'OTP ${otp} à ${email}`);
   // L'intégration de ton service d'email se fera ici.
 }
 
@@ -41,7 +41,7 @@ export async function sendVerificationEmail(
 
 export function generateToken(
   userId: string,
-  role: "CANDIDATE" | "COMPANY" | "ADMIN"
+  role: "CANDIDATE" | "COMPANY" | "ADMIN",
 ): string {
   // Stocke l'ID de l'utilisateur et son rôle dans le jeton pour l'autorisation future
   return jwt.sign({ id: userId, role: role }, JWT_SECRET, { expiresIn: "30d" });

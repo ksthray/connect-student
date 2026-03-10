@@ -25,7 +25,7 @@ export default function Newsletter() {
 
       setEmail(""); // Reset du champ
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
 
       toast.error(error.response?.data?.message || "Une erreur est survenue.");
     } finally {

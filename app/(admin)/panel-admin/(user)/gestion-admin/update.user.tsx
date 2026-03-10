@@ -92,7 +92,7 @@ const UpdateUserAdmin = ({
     },
     onError: (err: ErrorAxiosType) => {
       toast.error(err.response.data.message as string);
-      console.log(err);
+      // console.log(err);
     },
   });
 

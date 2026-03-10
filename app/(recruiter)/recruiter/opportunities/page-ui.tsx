@@ -106,7 +106,7 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
       }
     },
     onError: (err: any, variables: string, context: any) => {
-      console.log(err);
+      // console.log(err);
       toast.error(err.response?.data?.message || "Erreur de suppression", {
         id: context?.toastId,
       });
@@ -136,7 +136,7 @@ export default function RecruiterOpportunities({ token }: { token: string }) {
       }
     },
     onError: (err: any, variables: { jobId: string; active: boolean }, context: any) => {
-      console.log(err);
+      // console.log(err);
       toast.error(err.response?.data?.message || "Erreur de mise à jour", {
         id: context?.toastId,
       });

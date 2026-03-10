@@ -49,7 +49,7 @@ const CropImage = ({
 
       setloading(false);
     } catch (error) {
-      console.log("err:", error);
+      // console.log("err:", error);
       toast.error("Une erreur est survenue, veuillez réessayer !");
       setloading(false);
     }
