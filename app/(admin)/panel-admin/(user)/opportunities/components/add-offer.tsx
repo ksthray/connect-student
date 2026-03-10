@@ -218,7 +218,7 @@ const AddOffer = ({
       form.setValue("coverImage", response.data.secure_url);
       toast.success("Image téléchargée avec succès !", { id: toastId });
     } catch (error) {
-      console.log("err:", error);
+      // console.log("err:", error);
       toast.error("Une erreur est survenue, veuillez réessayer !", {
         id: toastId,
       });
@@ -269,7 +269,7 @@ const AddOffer = ({
       detail: values.detail === "" ? values.description : values.detail,
     };
 
-    console.log(state);
+    // console.log(state);
     mutation.mutate(state);
     // console.log("formated:", typeof formatedDateline);
     // console.log("normal:", new Date(values.deadline));

@@ -23,7 +23,7 @@ export function useFetch({ route, query, params, enabled }: Query) {
       });
       return data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   const { data, isLoading, isError, refetch } = useQuery({

@@ -20,17 +20,17 @@ export async function GET() {
         state: true,
         data: sectors,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     return NextResponse.json(
       {
         state: false,
         error: "Erreur serveur lors de la récupération des catégories.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

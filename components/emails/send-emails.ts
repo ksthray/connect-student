@@ -73,9 +73,9 @@ export async function sendEmail({
   const transporter = getTransporter(sender);
   transporter.verify(function (error, success) {
     if (error) {
-      console.log("Error:", error);
+      // console.log("Error:", error);
     } else {
-      console.log("Server is ready to take our messages", success);
+      // console.log("Server is ready to take our messages", success);
     }
   });
 

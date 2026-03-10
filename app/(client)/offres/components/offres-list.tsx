@@ -89,7 +89,7 @@ export default function OffresList() {
         <div className="mt-10 pt-6 border-t">
           <AnimatePresence>
             {/* La condition d'affichage reste la même */}
-            {!isLoading && !shouldShowUpsellBar && (
+            {!isLoading && !isAuthenticated && !shouldShowUpsellBar && (
               <motion.div
                 // Propriétés d'animation
                 initial={{ opacity: 0, y: 100 }} // État initial (caché en bas, invisible)
@@ -142,7 +142,7 @@ export default function OffresList() {
                     ) : (
                       // Si déjà authentifié
                       <Button
-                        onClick={() => console.log("Rediriger vers les Plans")}
+                        onClick={() => { } /* console.log("Rediriger vers les Plans") */}
                         variant={"secondary"}
                         className="w-full md:w-auto">
                         Mettre à Niveau / Voir Plans

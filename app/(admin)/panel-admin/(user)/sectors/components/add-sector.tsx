@@ -68,7 +68,7 @@ const AddSector = ({ open, setopen }: Props) => {
       }
     },
     onError: (err) => {
-      console.log(err);
+      // console.log(err);
       //   toast.error(err.response.data.message as string);
     },
   });

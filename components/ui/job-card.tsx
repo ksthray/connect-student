@@ -23,7 +23,7 @@ export const JobCard = ({ offer }: { offer: JobOfferType }) => {
         title: offer.title,
         url: url,
       })
-      .then(() => console.log("Partage réussi"))
+      .then(() => {/* console.log("Partage réussi") */ })
       .catch((error) => console.error("Erreur de partage:", error));
   }, [offer.title, url]);
 

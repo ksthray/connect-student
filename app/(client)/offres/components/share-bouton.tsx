@@ -12,7 +12,7 @@ const ShareButtonForSlug = ({ title, url }: { title: string; url: string }) => {
         title: title,
         url: url,
       })
-      .then(() => console.log("Partage réussi"))
+      .then(() => { } /* console.log("Partage réussi") */)
       .catch((error) => console.error("Erreur de partage:", error));
   }, [title, url]);
 

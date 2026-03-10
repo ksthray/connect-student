@@ -202,7 +202,7 @@ const UpdateOffer = ({
       form.setValue("coverImage", response.data.secure_url);
       toast.success("Image téléchargée avec succès !", { id: toastId });
     } catch (error) {
-      console.log("err:", error);
+      // console.log("err:", error);
       toast.error("Une erreur est survenue, veuillez réessayer !", {
         id: toastId,
       });

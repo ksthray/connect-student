@@ -185,7 +185,7 @@ export async function GET(request: Request) {
       { status: 200 },
     );
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     return NextResponse.json(
       {

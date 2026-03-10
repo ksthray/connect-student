@@ -78,7 +78,7 @@ const Subscribers = ({ subscribers }: { subscribers: SubscribersType[] }) => {
         <div>
           <div className="flex items-center justify-center gap-2">
             <button
-              onClick={() => console.log(row.original)}
+              onClick={() => {/* console.log(row.original) */ }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
             </button>

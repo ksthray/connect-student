@@ -18,7 +18,7 @@ const getCvFileName = (url: string | null): string => {
       ? parts[parts.length - 1].substring(0, 30) + "..."
       : parts[parts.length - 1];
   } catch (e) {
-    console.log("e:", e);
+    // console.log("e:", e);
 
     return "Fichier CV (URL valide)";
   }

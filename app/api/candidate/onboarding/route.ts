@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ state: true, data: newUser }, { status: 201 });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return NextResponse.json(
       { error: "Erreur interne du serveur lors de la création de l'etudiant." },
       { status: 500 },

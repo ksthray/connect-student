@@ -137,7 +137,7 @@ const UpdateTestimony = ({ avis, open, setopen }: Props) => {
     },
     onError: (err: ErrorAxiosType) => {
       toast.error(err.response.data.message as string);
-      console.log(err);
+      // console.log(err);
     },
   });
 
@@ -237,11 +237,10 @@ const UpdateTestimony = ({ avis, open, setopen }: Props) => {
                   <Star
                     key={star}
                     size={24}
-                    className={`cursor-pointer ${
-                      star <= starGest
+                    className={`cursor-pointer ${star <= starGest
                         ? "fill-yellow-400 text-yellow-400"
                         : "text-gray-400"
-                    }`}
+                      }`}
                     onClick={() => {
                       setstarGest(star);
                       form.setValue("stars", star);
